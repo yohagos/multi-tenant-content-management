@@ -1,0 +1,7 @@
+<div class="toolbar">
+    @for (item of items; track $index) {
+      <button class="nav-btn" (click)="navigate(item.link)">
+        {{item.name}}
+      </button>
+    }
+</div>
