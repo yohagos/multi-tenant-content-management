@@ -1,0 +1,27 @@
+<!-- <div class="container">
+  <div class="title">
+    {{ title }}
+  </div>
+
+  <div class="space">
+    {{ subtitle }}
+  </div>
+
+  <div class="btns">
+    <shared-accept-btn ></shared-accept-btn>
+    <shared-reject-btn ></shared-reject-btn>
+  </div>
+</div> -->
+
+<h2 mat-dialog-title> {{ title }} </h2>
+<mat-dialog-content>
+  <div class="spacer">
+    @if (subtitle.length > 0) {
+      {{ subtitle }}
+    }
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <shared-accept-btn (click)="confirm()"></shared-accept-btn>
+  <shared-reject-btn (click)="decline()"></shared-reject-btn>
+</mat-dialog-actions>
