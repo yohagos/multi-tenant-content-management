@@ -11,6 +11,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/yohagos/multi-content-management/internal/core/domain"
 	"github.com/yohagos/multi-content-management/internal/core/port"
+	"github.com/yohagos/multi-content-management/pkg/metrics"
 )
 
 type tenantRepository struct {
@@ -22,6 +23,8 @@ func NewTenantRepository(db *sqlx.DB) port.TenantRepository {
 }
 
 func (r *tenantRepository) Create(ctx context.Context, tenant *domain.Tenant) error {
+	start := time.Now()
+
 	query := `
 		INSERT INTO tenants (id, name, slug, domain, config, active, created_at, updated_at)
 		VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
@@ -36,10 +39,21 @@ func (r *tenantRepository) Create(ctx context.Context, tenant *domain.Tenant) er
 		tenant.ID, tenant.Name, tenant.Slug, tenant.Domain,
 		configJSON, tenant.Active, tenant.CreatedAt, tenant.UpdatedAt)
 
-	return err
+	duration := time.Since(start).Seconds()
+	metrics.DbQueryDuration.WithLabelValues("create", "tenants").Observe(duration)
+
+	if err != nil {
+		metrics.DbQueryTotal.WithLabelValues("create", "tenants", "error").Inc()
+		return err
+	}
+
+	metrics.DbQueryTotal.WithLabelValues("create", "tenants", "success").Inc()
+	return nil
 }
 
 func (r *tenantRepository) GetByID(ctx context.Context, id string) (*domain.Tenant, error) {
+	start := time.Now()
+
 	query := `SELECT id, name, slug, domain, config, active, created_at, updated_at FROM tenants WHERE id = $1 AND deleted_at IS NULL`
 
 	var tenant domain.Tenant
@@ -56,12 +70,19 @@ func (r *tenantRepository) GetByID(ctx context.Context, id string) (*domain.Tena
 	}
 
 	err := r.db.GetContext(ctx, &tenantWrapper, query, id)
+
+	duration := time.Since(start).Seconds()
+	metrics.DbQueryDuration.WithLabelValues("get_by_id", "tenants").Observe(duration)
+
 	if err == sql.ErrNoRows {
+		metrics.DbQueryTotal.WithLabelValues("get_by_id", "tenants", "not_found").Inc()
 		return nil, nil
 	}
 	if err != nil {
+		metrics.DbQueryTotal.WithLabelValues("get_by_id", "tenants", "error").Inc()
 		return nil, err
 	}
+	metrics.DbQueryTotal.WithLabelValues("get_by_id", "tenants", "success").Inc()
 
 	tenant.ID = tenantWrapper.ID
 	tenant.Name = tenantWrapper.Name
@@ -81,6 +102,8 @@ func (r *tenantRepository) GetByID(ctx context.Context, id string) (*domain.Tena
 }
 
 func (r *tenantRepository) GetBySlug(ctx context.Context, slug string) (*domain.Tenant, error) {
+	start := time.Now()
+
 	query := `SELECT id, name, slug, domain, config, active, created_at, updated_at FROM tenants WHERE slug = $1 AND deleted_at IS NULL`
 
 	var tenant domain.Tenant
@@ -96,12 +119,20 @@ func (r *tenantRepository) GetBySlug(ctx context.Context, slug string) (*domain.
 	}
 
 	err := r.db.GetContext(ctx, &tenantWrapper, query, slug)
+
+	duration := time.Since(start).Seconds()
+	metrics.DbQueryDuration.WithLabelValues("get_by_slug", "tenants").Observe(duration)
+
 	if err == sql.ErrNoRows {
-		return nil, nil
-	}
-	if err != nil {
+		metrics.DbQueryTotal.WithLabelValues("get_by_slug", "tenants", "not_found").Inc()
 		return nil, err
 	}
+	if err != nil {
+		metrics.DbQueryTotal.WithLabelValues("get_by_slug", "tenants", "error").Inc()
+		return nil, err
+	}
+
+	metrics.DbQueryTotal.WithLabelValues("get_by_slug", "tenants", "success").Inc()
 
 	tenant.ID = tenantWrapper.ID
 	tenant.Name = tenantWrapper.Name
@@ -121,6 +152,8 @@ func (r *tenantRepository) GetBySlug(ctx context.Context, slug string) (*domain.
 }
 
 func (r *tenantRepository) GetByDomain(ctx context.Context, dom string) (*domain.Tenant, error) {
+	start := time.Now()
+
 	query := `SELECT id, name, slug, domain, config, active, created_at, updated_at FROM tenants WHERE domain = $1 AND deleted_at IS NULL`
 
 	var tenant domain.Tenant
@@ -136,12 +169,19 @@ func (r *tenantRepository) GetByDomain(ctx context.Context, dom string) (*domain
 	}
 
 	err := r.db.GetContext(ctx, &tenantWrapper, query, dom)
+
+	duration := time.Since(start).Seconds()
+	metrics.DbQueryDuration.WithLabelValues("get_by_domain", "tenants").Observe(duration)
+
 	if err == sql.ErrNoRows {
-		return nil, nil
-	}
-	if err != nil {
+		metrics.DbQueryTotal.WithLabelValues("get_by_domain", "tenants", "not_found").Inc()
 		return nil, err
 	}
+	if err != nil {
+		metrics.DbQueryTotal.WithLabelValues("get_by_domain", "tenants", "error").Inc()
+		return nil, err
+	}
+	metrics.DbQueryTotal.WithLabelValues("get_by_domain", "tenants", "success").Inc()
 
 	tenant.ID = tenantWrapper.ID
 	tenant.Name = tenantWrapper.Name
@@ -161,6 +201,8 @@ func (r *tenantRepository) GetByDomain(ctx context.Context, dom string) (*domain
 }
 
 func (r *tenantRepository) List(ctx context.Context, filter domain.TenantFilter) ([]domain.Tenant, int, error) {
+	start := time.Now()
+
 	conditions := []string{"deleted_at IS NULL"}
 	args := []interface{}{}
 	argIndex := 1
@@ -209,9 +251,13 @@ func (r *tenantRepository) List(ctx context.Context, filter domain.TenantFilter)
 	}
 
 	err := r.db.SelectContext(ctx, &tenantWrappers, query, args...)
+	duration := time.Since(start).Seconds()
+	metrics.DbQueryDuration.WithLabelValues("list", "tenants").Observe(duration)
 	if err != nil {
+		metrics.DbQueryTotal.WithLabelValues("list", "tenants", "error").Inc()
 		return nil, 0, err
 	}
+	metrics.DbQueryTotal.WithLabelValues("list", "tenants", "success").Inc()
 
 	tenants := make([]domain.Tenant, len(tenantWrappers))
 	for i, w := range tenantWrappers {
@@ -233,6 +279,8 @@ func (r *tenantRepository) List(ctx context.Context, filter domain.TenantFilter)
 }
 
 func (r *tenantRepository) Update(ctx context.Context, tenant *domain.Tenant) error {
+	start := time.Now()
+
 	query := `
 		UPDATE tenants 
 		SET name = $1, slug = $2, domain = $3, config = $4, active = $5, updated_at = $6
@@ -247,9 +295,13 @@ func (r *tenantRepository) Update(ctx context.Context, tenant *domain.Tenant) er
 	result, err := r.db.ExecContext(ctx, query,
 		tenant.Name, tenant.Slug, tenant.Domain,
 		configJSON, tenant.Active, tenant.UpdatedAt, tenant.ID)
+	duration := time.Since(start).Seconds()
+	metrics.DbQueryDuration.WithLabelValues("update", "tenants").Observe(duration)
 	if err != nil {
+		metrics.DbQueryTotal.WithLabelValues("update", "tenants", "error").Inc()
 		return err
 	}
+	metrics.DbQueryTotal.WithLabelValues("update", "tenants", "success").Inc()
 
 	rowsAffected, err := result.RowsAffected()
 	if err != nil {
@@ -263,11 +315,18 @@ func (r *tenantRepository) Update(ctx context.Context, tenant *domain.Tenant) er
 }
 
 func (r *tenantRepository) Delete(ctx context.Context, id string) error {
+	start := time.Now()
 	query := `UPDATE tenants SET deleted_at = NOW() WHERE id = $1 AND deleted_at IS NULL`
 	result, err := r.db.ExecContext(ctx, query, id)
+
+	duration := time.Since(start).Seconds()
+	metrics.DbQueryDuration.WithLabelValues("delete", "tenants").Observe(duration)
+
 	if err != nil {
+		metrics.DbQueryTotal.WithLabelValues("delete", "tenants", "error").Inc()
 		return err
 	}
+	metrics.DbQueryTotal.WithLabelValues("delete", "tenants", "success").Inc()
 
 	rowsAffected, err := result.RowsAffected()
 	if err != nil {
