@@ -1,7 +1,25 @@
-<div class="toolbar">
-    @for (item of items; track $index) {
-      <button class="nav-btn" (click)="navigate(item.link)">
-        {{item.name}}
-      </button>
+<mat-toolbar class="toolbar">
+  @for (item of items; track item.name) {
+    <button matButton [matMenuTriggerFor]="menu">
+      {{ item.name }}
+    </button>
+  }
+
+  <mat-menu #menu="matMenu">
+    @for (item of items; track item.name) {
+      @for (link of item.menu.links; track link.link) {
+        <button mat-menu-item [routerLink]="link.link">
+          {{ link.name }}
+        </button>
+      }
     }
-</div>
+  </mat-menu>
+
+  <button class="theme-switch" mat-icon-button (click)="themeService.toggle()">
+    @if (themeService.theme() === 'light') {
+      <mat-icon>dark_mode</mat-icon>
+    } @else {
+      <mat-icon>light_mode</mat-icon>
+    }
+  </button>
+</mat-toolbar>
