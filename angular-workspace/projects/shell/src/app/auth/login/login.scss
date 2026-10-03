@@ -1,0 +1,55 @@
+.card {
+  margin: 2em auto;
+  height: 20em;
+  width: 80%;
+}
+
+.wrapper {
+  margin: auto 1em;
+}
+
+.left-section {
+  float: left;
+  width: 50%;
+}
+
+.wrapper-logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 2em;
+  min-height: 10em;
+}
+
+.logo {
+  background-color: rgba($color: #1122ef, $alpha: 0.35);
+  padding: 2em;
+
+  box-shadow: 8px 8px 8px #3333af;
+
+  .mat-mdc-card-content:first-child {
+    padding-top: 0 ;
+  }
+}
+
+.right-section {
+  float: right;
+
+  min-height: 55% !important;
+  width: 45%;
+}
+
+.login {
+  padding: 1.5em;
+}
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+  margin: auto;
+}
+
+.submit-btn {
+  float: right;
+}
