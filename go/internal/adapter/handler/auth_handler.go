@@ -51,6 +51,7 @@ func (h *AuthHandler) Login(c *gin.Context) {
 		return
 	}
 
+
 	response, err := h.authService.Login(c.Request.Context(), &req)
 	if err != nil {
 		if err == service.ErrInvalidCredentials {

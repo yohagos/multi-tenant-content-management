@@ -8,19 +8,36 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/yohagos/multi-content-management/internal/core/domain"
 	"github.com/yohagos/multi-content-management/internal/core/port"
+	"github.com/yohagos/multi-content-management/pkg/logger"
+	"go.uber.org/zap"
 )
 
 type userRepository struct {
 	db     *sqlx.DB
+	logger logger.Logger
 }
 
-func NewUserRepository(db *sqlx.DB) port.UserRepository {
-	return &userRepository{db: db}
+func NewUserRepository(db *sqlx.DB, logger logger.Logger) port.UserRepository {
+	return &userRepository{db: db, logger: logger}
 }
 
 func (r *userRepository) Create(ctx context.Context, user *domain.User) error {
 	user.CreatedAt = time.Now()
 	user.UpdatedAt = time.Now()
+
+	if user.TenantID != nil {
+		query := `
+		INSERT INTO users (tenant_id, email, password_hash, first_name, last_name, role, active, created_at, updated_at)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+	`
+
+		_, err := r.db.ExecContext(
+			ctx, query, user.Email, user.PasswordHash, user.FirstName,
+			user.LastName, user.Role, user.Active, user.CreatedAt, user.UpdatedAt,
+		)
+
+		return err
+	}
 
 	query := `
 		INSERT INTO users (email, password_hash, first_name, last_name, role, active, created_at, updated_at)
@@ -56,8 +73,10 @@ func (r *userRepository) GetByID(ctx context.Context, id string) (*domain.User, 
 }
 
 func (r *userRepository) GetByEmail(ctx context.Context, email string) (*domain.User, error) {
+	log := r.logger
+	log.Info("UserRepo || GetByEmail || GetByEmail was called and will be searching for email", zap.String("Email", email))
 	query := `
-		SELECT is, tenant_id, email, password_hash, first_name, last_name, role,
+		SELECT id, tenant_id, email, password_hash, first_name, last_name, role,
 		active, last_login_at, created_at, updated_at, deleted_at 
 		FROM users
 		WHERE email = $1 AND deleted_at IS NULL
@@ -66,11 +85,15 @@ func (r *userRepository) GetByEmail(ctx context.Context, email string) (*domain.
 	var user domain.User
 	err := r.db.GetContext(ctx, &user, query, email)
 	if err == sql.ErrNoRows {
+		log.Error("UserRepo || GetByEmail || No rows found for email", zap.String("Email", email), zap.Error(err))
 		return nil, nil
 	}
 	if err != nil {
+		log.Error("UserRepo || GetByEmail || Error occurred while searching for email", zap.String("Email", email), zap.Error(err))
 		return nil, err
 	}
+
+	log.Info("UserRepo || GetByEmail || User found successfully", zap.Any("User", user))
 
 	return &user, nil
 }
