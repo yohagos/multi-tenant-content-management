@@ -4,7 +4,7 @@ import "time"
 
 type User struct {
 	ID           string     `db:"id" json:"id"`
-	TenantID     string     `db:"tenant_id" json:"tenant_id"`
+	TenantID     *string     `db:"tenant_id" json:"tenant_id,omitempty"`
 	Email        string     `db:"email" json:"email"`
 	PasswordHash string     `db:"password_hash" json:"password_hash"`
 	FirstName    string     `db:"first_name" json:"first_name"`
@@ -37,7 +37,7 @@ type RegisterRequest struct {
 	Password  string `json:"password" binding:"required,min=8"`
 	FirstName string `json:"first_name"`
 	LastName  string `json:"last_name"`
-	TenantID  string `json:"tenant_id"`
+	TenantID  string `json:"tenant_id,omitempty"`
 }
 
 type LoginResponse struct {
