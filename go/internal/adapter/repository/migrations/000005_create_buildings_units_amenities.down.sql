@@ -1,0 +1,6 @@
+DROP TABLE IF EXISTS building_amenities ;
+DROP TABLE IF EXISTS unit_amenities ;
+DROP TABLE IF EXISTS amenities ;
+DROP TABLE IF EXISTS units;
+DROP TABLE IF EXISTS buildings;
+DROP TABLE IF EXISTS media;
