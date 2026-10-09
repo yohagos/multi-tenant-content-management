@@ -1,3 +1,12 @@
+-- ENUMs
+CREATE TYPE building_status AS ENUM ('draft', 'published', 'archived');
+CREATE TYPE unit_status AS ENUM ('draft', 'available', 'reserved', 'rented', 'archived');
+CREATE TYPE amenity_category AS ENUM (
+    'interior', 'kitchen', 'bathroom', 'outdoor',
+    'building', 'technology', 'parking', 'accessibility', 'other'
+);
+CREATE TYPE media_entity_type AS ENUM ('building', 'unit');
+
 -- Buildings (Gebäude/Objekte)
 CREATE TABLE IF NOT EXISTS buildings (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -15,14 +24,13 @@ CREATE TABLE IF NOT EXISTS buildings (
     total_floors INT,
     total_units INT DEFAULT 0,
     description TEXT,
-    status VARCHAR(50) NOT NULL DEFAULT 'draft',
+    status building_status  NOT NULL DEFAULT 'draft',
     published BOOLEAN NOT NULL DEFAULT FALSE,
     published_at TIMESTAMP WITH TIME ZONE,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     deleted_at TIMESTAMP WITH TIME ZONE,
-    CONSTRAINT unique_tenant_building_slug UNIQUE (tenant_id, slug),
-    CONSTRAINT valid_building_status CHECK (status IN ('draft', 'published', 'archived'))
+    CONSTRAINT unique_tenant_building_slug UNIQUE (tenant_id, slug)
 );
 
 CREATE INDEX idx_buildings_tenant_id ON buildings(tenant_id) WHERE deleted_at IS NULL;
@@ -54,7 +62,7 @@ CREATE TABLE IF NOT EXISTS units (
     warm_rent DECIMAL(10, 2),
     deposit DECIMAL(10, 2),
     available_from DATE,
-    status VARCHAR(50) NOT NULL DEFAULT 'draft',
+    status unit_status NOT NULL DEFAULT 'draft',
     published BOOLEAN NOT NULL DEFAULT FALSE,
     published_at TIMESTAMP WITH TIME ZONE,
     title VARCHAR(500),
@@ -62,8 +70,7 @@ CREATE TABLE IF NOT EXISTS units (
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     deleted_at TIMESTAMP WITH TIME ZONE,
-    CONSTRAINT unique_building_unit_number UNIQUE (building_id, unit_number),
-    CONSTRAINT valid_unit_status CHECK (status IN ('draft', 'available', 'reserved', 'rented', 'archived'))
+    CONSTRAINT unique_building_unit_number UNIQUE (building_id, unit_number)
 );
 
 CREATE INDEX idx_units_tenant_id ON units(tenant_id) WHERE deleted_at IS NULL;
@@ -83,15 +90,11 @@ CREATE TABLE IF NOT EXISTS amenities (
     tenant_id UUID REFERENCES tenants(id) ON DELETE CASCADE,
     code VARCHAR(100) NOT NULL,
     name VARCHAR(255) NOT NULL,
-    category VARCHAR(100) NOT NULL,
+    category amenity_category NOT NULL,
     icon VARCHAR(100),
     is_global BOOLEAN NOT NULL DEFAULT FALSE,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-    CONSTRAINT unique_tenant_amenity_code UNIQUE (tenant_id, code),
-    CONSTRAINT valid_amenity_category CHECK (category IN (
-        'interior', 'kitchen', 'bathroom', 'outdoor', 
-        'building', 'technology', 'parking', 'accessibility', 'other'
-    ))
+    CONSTRAINT unique_tenant_amenity_code UNIQUE (tenant_id, code)
 );
 
 CREATE INDEX idx_amenities_tenant_id ON amenities(tenant_id);
@@ -129,7 +132,7 @@ CREATE INDEX idx_building_amenities_amenity_id ON building_amenities(amenity_id)
 CREATE TABLE IF NOT EXISTS media (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     tenant_id UUID NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
-    entity_type VARCHAR(50) NOT NULL,
+    entity_type media_entity_type NOT NULL,
     entity_id UUID NOT NULL,
     file_name VARCHAR(500) NOT NULL,
     file_path VARCHAR(1000) NOT NULL,
