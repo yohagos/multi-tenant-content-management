@@ -2,9 +2,27 @@ package domain
 
 import "time"
 
+type UnitStatus string
+
+const (
+	UnitStatusDraft UnitStatus = "draft"
+	UnitStatusAvailable UnitStatus = "available"
+	UnitStatusReserved UnitStatus = "reserved"
+	UnitStatusRented UnitStatus = "rented"
+	UnitStatusArchived UnitStatus = "archived"
+)
+
+func (s UnitStatus) IsValid() bool {
+	switch s {
+	case UnitStatusDraft, UnitStatusAvailable, UnitStatusReserved, UnitStatusRented, UnitStatusArchived:
+		return true
+	}
+	return false
+}
+
 type Unit struct {
 	ID             string     `db:"id" json:"id"`
-	TenantID       string     `db:"tenant_id" json:"tenant_id"`
+	TenantID       string     `db:"tenant_id" json:"tenant_id,omitempty"`
 	BuildingID     string     `db:"building_id" json:"building_id"`
 	UnitNumber     string     `db:"unit_number" json:"unit_number"`
 	Floor          *int       `db:"floor" json:"floor,omitempty"`
@@ -19,7 +37,7 @@ type Unit struct {
 	WarmRent       *float64   `db:"warm_rent" json:"warm_rent,omitempty"`
 	Deposit        *float64   `db:"deposit" json:"deposit,omitempty"`
 	AvailableFrom  *time.Time `db:"available_from" json:"available_from,omitempty"`
-	Status         string     `db:"status" json:"status"`
+	Status         UnitStatus     `db:"status" json:"status"`
 	Published      bool       `db:"published" json:"published"`
 	PublishedAt    *time.Time `db:"published_at" json:"published_at,omitempty"`
 	Title          string     `db:"title" json:"title"`
