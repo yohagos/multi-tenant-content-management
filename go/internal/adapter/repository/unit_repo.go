@@ -78,6 +78,27 @@ func (r *unitRepository) GetByID(ctx context.Context, id string) (*domain.Unit, 
 	return &unit, nil
 }
 
+func (r *unitRepository) GetByTitleUnitNumber(ctx context.Context, title string, unit_number string) (*domain.Unit, error) {
+	query := `
+		SELECT
+			id, tenant_id, building_id, unit_number, floor, rooms, bedrooms, bathrooms, living_area_sqm, total_area_sqm,
+			balcony_area_sqm, ceiling_height_m, cold_rent, warm_rent, deposit, available_from, status,
+			published, published_at, title, description, created_at, updated_at
+		FROM units
+		WHERE title = $1 AND unit_number = $2 AND deleted_at IS NULL
+	`
+
+	var unit domain.Unit
+
+	err := r.db.GetContext(ctx, &unit, query, title, unit_number)
+
+	if err == sql.ErrNoRows || err != nil {
+		return nil, err
+	}
+
+	return &unit, nil
+}
+
 func (r *unitRepository) List(ctx context.Context, filter *domain.UnitFilter) ([]domain.Unit, int, error) {
 	conditions := []string{"deleted IS NULL"}
 	args := []interface{}{}
