@@ -23,6 +23,22 @@ const (
 	MediaEntityTypeUnit     MediaEntityType = "unit"
 )
 
+func (category AmenityCategory) IsValid() bool {
+	switch category {
+	case AmenityCategoryAccessibility,
+		AmenityCategoryBathroom,
+		AmenityCategoryBuilding,
+		AmenityCategoryInterior,
+		AmenityCategoryKitchen,
+		AmenityCategoryOther,
+		AmenityCategoryOutdoor,
+		AmenityCategoryParking,
+		AmenityCategoryTechnology:
+		return true
+	}
+	return false
+}
+
 type Amenity struct {
 	ID        string          `db:"id" json:"id"`
 	TenantID  *string         `db:"tenant_id" json:"tenant_id,omitempty"`
