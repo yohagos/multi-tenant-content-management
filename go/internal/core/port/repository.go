@@ -2,6 +2,7 @@ package port
 
 import (
 	"context"
+	"io"
 
 	"github.com/yohagos/multi-content-management/internal/core/domain"
 )
@@ -40,13 +41,28 @@ type BuildingRepository interface {
 type UnitRepository interface {
 	Create(ctx context.Context, unit *domain.Unit) error
 	GetByID(ctx context.Context, id string) (*domain.Unit, error)
+	GetByTitleUnitNumber(ctx context.Context, title string, unit_number string) (*domain.Unit, error)
 	List(ctx context.Context, filter *domain.UnitFilter) ([]domain.Unit, int, error)
 	Update(ctx context.Context, unit *domain.Unit) error
 	Delete(ctx context.Context, id string) error
 }
 
 type AmenityRepository interface {
+	Create(ctx context.Context, amenity *domain.Amenity) error
+	GetByID(ctx context.Context, id string) (*domain.Amenity, error)
+	List(ctx context.Context) ([]domain.Amenity, error)
+	Update(ctx context.Context, amenity *domain.Amenity) error
+	Delete(ctx context.Context, id string) error
 }
 
 type MediaRepository interface {
+	Create(ctx context.Context, media *domain.Media) error
+	GetByID(ctx context.Context, id string) (*domain.Media, error)
+	ListByEntity(ctx context.Context, entityType domain.MediaEntityType, entityID string) ([]domain.Media, error)
+	Delete(ctx context.Context, id string) error
+}
+
+type MediaStorage interface {
+	Save(ctx context.Context, file io.Reader, fileName string) (filePath string, fileSize int64, err error)
+	Delete(ctx context.Context, filePath string) error
 }
