@@ -24,7 +24,11 @@ type TenantService struct {
 	publisher  port.EventPublisher
 }
 
-func NewTenantService(tenantRepo port.TenantRepository, cacheRepo port.CacheRepository, publisher port.EventPublisher) *TenantService {
+func NewTenantService(
+	tenantRepo port.TenantRepository, 
+	cacheRepo port.CacheRepository, 
+	publisher port.EventPublisher,
+) *TenantService {
 	return &TenantService{
 		tenantRepo: tenantRepo,
 		cacheRepo:  cacheRepo,

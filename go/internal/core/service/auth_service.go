@@ -55,10 +55,15 @@ func (s *AuthService) Register(ctx context.Context, req *domain.RegisterRequest)
 		PasswordHash: string(hashedPassword),
 		FirstName:    req.FirstName,
 		LastName:     req.LastName,
+		TenantID: &req.TenantID,
 		Role:         "editor",
 		Active:       true,
 		CreatedAt:    time.Now(),
 		UpdatedAt:    time.Now(),
+	}
+
+	if req.TenantID == "" {
+		user.TenantID = nil
 	}
 
 	if err := s.userRepo.Create(ctx, user); err != nil {
@@ -155,14 +160,12 @@ func (s *AuthService) ValidateToken(ctx context.Context, tokenStr string) (*doma
 
 func (s *AuthService) createTokens(ctx context.Context, userID string) (string, string, time.Time, error) {
 	expiresAt := time.Now().Add(s.jwtConfig.Expiry)
-
 	tokenStr, err := jwt.GenerateToken(userID, s.jwtConfig.Secret, expiresAt)
 	if err != nil {
 		return "", "", time.Time{}, err
 	}
 
 	refreshToken := generateRandomToken(32)
-
 	token := &domain.Token{
 		UserID:       userID,
 		Token:        tokenStr,
