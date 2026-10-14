@@ -31,6 +31,9 @@ type Config struct {
 	JWTExpiry          time.Duration `mapstructure:"JWT_EXPIRY"`
 	RateLimitRequests  int           `mapstructure:"RATE_LIMIT_REQUESTS"`
 	RateLimitWindow    time.Duration `mapstructure:"RATE_LIMIT_WINDOW"`
+
+	AdminEmail string `mapstructure:"ADMIN_EMAIL"`
+	AdminPassword string `mapstructure:"ADMIN_PASSWORD"`
 }
 
 func Load() (*Config, error) {
@@ -61,6 +64,9 @@ func Load() (*Config, error) {
 	viper.SetDefault("JWT_EXPIRY", "24h")
 	viper.SetDefault("RATE_LIMIT_REQUESTS", 100)
 	viper.SetDefault("RATE_LIMIT_WINDOW", "1m")
+
+	viper.SetDefault("ADMIN_EMAIL", "admin@multitenant.com")
+	viper.SetDefault("ADMIN_PASSWORD", "Admin123!")
 
 	if err := viper.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
