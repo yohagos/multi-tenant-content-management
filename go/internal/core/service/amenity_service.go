@@ -18,7 +18,7 @@ type AmenityService struct {
 	amenityRepo port.AmenityRepository
 }
 
-func NewAmenityRepository(amenityRepo port.AmenityRepository) *AmenityService {
+func NewAmenityService(amenityRepo port.AmenityRepository) *AmenityService {
 	return &AmenityService{
 		amenityRepo: amenityRepo,
 	}

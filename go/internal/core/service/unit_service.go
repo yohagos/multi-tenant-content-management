@@ -21,7 +21,7 @@ type UnitService struct {
 	unitRepo port.UnitRepository
 }
 
-func NewUnitRepository(unitRepo port.UnitRepository) *UnitService {
+func NewUnitService(unitRepo port.UnitRepository) *UnitService {
 	return &UnitService{
 		unitRepo: unitRepo,
 	}

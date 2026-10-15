@@ -12,7 +12,7 @@ import (
 )
 
 type amenityRepository struct {
-	db sqlx.DB
+	db *sqlx.DB
 }
 
 var (
@@ -20,7 +20,7 @@ var (
 	ErrAmenityNotFound  = errors.New("amenity not found")
 )
 
-func NewAmenityRepository(db sqlx.DB) port.AmenityRepository {
+func NewAmenityRepository(db *sqlx.DB) port.AmenityRepository {
 	return &amenityRepository{
 		db: db,
 	}
