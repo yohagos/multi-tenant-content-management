@@ -19,6 +19,7 @@ import (
 	"github.com/yohagos/multi-content-management/internal/adapter/handler"
 	"github.com/yohagos/multi-content-management/internal/adapter/messaging"
 	"github.com/yohagos/multi-content-management/internal/adapter/repository"
+	"github.com/yohagos/multi-content-management/internal/adapter/storage"
 	"github.com/yohagos/multi-content-management/internal/config"
 	"github.com/yohagos/multi-content-management/internal/core/service"
 	"github.com/yohagos/multi-content-management/pkg/jwt"
@@ -73,6 +74,11 @@ func main() {
 	contentRepo := repository.NewContentRepository(db)
 	userRepo := repository.NewUserRepository(db, *log)
 	tokenRepo := repository.NewTokenRepository(db)
+	buildingRepo := repository.NewBuildingRepository(db)
+	amenityRepo := repository.NewAmenityRepository(db)
+	unitRepo := repository.NewUnitRepository(db)
+	mediaRepo := repository.NewMediaRepository(db)
+	mediaStorage := storage.NewLocalMediaStorage(cfg.StoragePath)
 
 	if err := tenantRepo.UpdateTenantMetrics(context.Background()); err != nil {
 		log.Error("Failed to update tenant metrics")
@@ -91,14 +97,33 @@ func main() {
 
 	tenantService := service.NewTenantService(tenantRepo, cacheRepo, publisher)
 	contentService := service.NewContentService(contentRepo, cacheRepo, publisher)
-
+	amenityService := service.NewAmenityService(amenityRepo)
+	buildingService := service.NewBuildingService(buildingRepo)
+	mediaService := service.NewMediaService(mediaRepo, mediaStorage)
+	unitService := service.NewUnitService(unitRepo)
 	authService := service.NewAuthService(userRepo, tokenRepo, &jwtConfig)
 
+	metaDataHandler := handler.NewMetaDataHandler()
 	tenantHandler := handler.NewTenantHandler(tenantService)
 	contentHandler := handler.NewContentHandler(contentService)
 	authHandler := handler.NewAuthHandler(authService)
+	amenityHandler := handler.NewAmenityHandler(amenityService)
+	buildingHandler := handler.NewBuildingHandler(buildingService)
+	mediaHandler := handler.NewMediaHandler(mediaService)
+	unitHandler := handler.NewUnitHandler(unitService)
 
-	router := setupRouter(tenantHandler, contentHandler, authHandler, authService, log)
+	router := setupRouter(
+		metaDataHandler,
+		tenantHandler,
+		contentHandler,
+		authHandler,
+		authService,
+		amenityHandler,
+		buildingHandler,
+		mediaHandler,
+		unitHandler,
+		log,
+	)
 
 	srv := &http.Server{
 		Addr:         fmt.Sprintf(":%s", cfg.Port),
@@ -182,10 +207,15 @@ func initRabbitMQ(cfg *config.Config, log *logger.Logger) *amqp.Connection {
 }
 
 func setupRouter(
+	metaDataHandler *handler.MetaDataHandler,
 	tenantHandler *handler.TenantHandler,
 	contentHandler *handler.ContentHandler,
 	authHandler *handler.AuthHandler,
 	authService *service.AuthService,
+	amenityHandler *handler.AmenityHandler,
+	buildingHandler *handler.BuildingHandler,
+	mediaHandler *handler.MediaHandler,
+	unitHandler *handler.UnitHandler,
 	log *logger.Logger,
 ) *gin.Engine {
 	gin.SetMode(gin.ReleaseMode)
@@ -234,6 +264,40 @@ func setupRouter(
 			content.DELETE("/:id", contentHandler.Delete)
 			content.POST("/:id/publish", contentHandler.Publish)
 		}
+
+		amenity := api.Group("/amenity")
+		{
+			amenity.POST("", amenityHandler.Create)
+			amenity.GET("", amenityHandler.List)
+			amenity.GET("/:id", amenityHandler.GetByID)
+			amenity.PUT("/:id", amenityHandler.Update)
+			amenity.DELETE("/:id", amenityHandler.Delete)
+		}
+
+		building := api.Group("/building")
+		{
+			building.POST("", buildingHandler.Create)
+			building.GET("", buildingHandler.List)
+			building.GET("/:id", buildingHandler.GetByID)
+			building.PUT("/:id", buildingHandler.Update)
+			building.DELETE("/:id", buildingHandler.Delete)
+		}
+
+		unit := api.Group("/unit")
+		{
+			unit.POST("", unitHandler.Create)
+			unit.GET("", unitHandler.List)
+			unit.GET("/:id", unitHandler.GetByID)
+			unit.PUT("/:id", unitHandler.Update)
+			unit.DELETE("/:id", unitHandler.Delete)
+		}
+
+		media := api.Group("/media")
+		{
+			media.POST("", mediaHandler.Upload)
+		}
+
+		api.GET("/metadata/enums", metaDataHandler.GetEnums)
 	}
 
 	return router
