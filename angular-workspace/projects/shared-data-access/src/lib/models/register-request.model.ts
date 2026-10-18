@@ -1,7 +1,7 @@
 export interface RegisterRequest {
   email: string
   password: string
-  firstName: string
-  lastName: string
-  tenantId?: string
+  first_name: string
+  last_name: string
+  tenant_id?: string
 }
