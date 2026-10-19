@@ -28,4 +28,17 @@ export class AmenityService {
       `${this.baseUrl}/amenity`
     )
   }
+
+  update(id: string, amenity: Amenity): Observable<void> {
+    return this.http.put<void>(
+      `${this.baseUrl}/amenity/${id}`,
+      amenity,
+    )
+  }
+
+  delete(id: string): Observable<void> {
+    return this.http.delete<void>(
+      `${this.baseUrl}/amenity/${id}`,
+    )
+  }
 }
