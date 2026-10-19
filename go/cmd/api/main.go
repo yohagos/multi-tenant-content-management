@@ -295,6 +295,9 @@ func setupRouter(
 		media := api.Group("/media")
 		{
 			media.POST("", mediaHandler.Upload)
+			media.GET("", mediaHandler.ListByEntity)
+			//media.GET("/:id", mediaHandler)
+			media.DELETE("/:id", mediaHandler.Delete)
 		}
 
 		api.GET("/metadata/enums", metaDataHandler.GetEnums)
