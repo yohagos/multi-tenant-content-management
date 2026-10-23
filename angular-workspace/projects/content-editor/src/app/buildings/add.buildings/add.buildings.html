@@ -1,0 +1,54 @@
+<mat-card appearance="outlined">
+  <mat-card-header></mat-card-header>
+  <mat-card-content>
+    <mat-stepper #stepper>
+      <mat-step [stepControl]="firstCreateForm" errorMessage="Fill out required fields.">
+        <form [formGroup]="firstCreateForm">
+          <ng-template matStepLabel>Overall information</ng-template>
+          <mat-form-field>
+            <mat-label>Name</mat-label>
+            <input matInput formControlName="name">
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Year Build</mat-label>
+            <input matInput formControlName="year_build">
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Total Floors</mat-label>
+            <input matInput formControlName="total_floors">
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Total Units</mat-label>
+            <input matInput formControlName="total_units">
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Description</mat-label>
+            <textarea matInput formControlName="description" ></textarea>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Status</mat-label>
+            <mat-select
+              [value]="selectedStatus()"
+              (selectionChange)="selectedStatus.set($event.value)">
+              @for (status of buildingStatus(); track status) {
+                <mat-option [value]="status">
+                  {{status}}
+                </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Published</mat-label>
+            <mat-checkbox formControlName="published">Publish</mat-checkbox>
+          </mat-form-field>
+
+          <button mat-button
+            [disabled]="!firstCreateForm.valid"
+            matStepperNext>
+            Next
+          </button>
+        </form>
+      </mat-step>
+    </mat-stepper>
+  </mat-card-content>
+</mat-card>
