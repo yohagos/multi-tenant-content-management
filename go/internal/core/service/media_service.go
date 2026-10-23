@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"io"
+	"os"
 	"path/filepath"
 	"strings"
 	"time"
@@ -133,6 +134,34 @@ func (s *MediaService) ListByEntity(
 	}
 
 	return s.mediaRepo.ListByEntity(ctx, entityType, entityID)
+}
+
+func (s *MediaService) GetFile(
+	ctx context.Context,
+	id string,
+) (*domain.Media, io.ReadCloser, error) {
+	if id == "" {
+		return nil, nil, ErrInvalidMedia
+	}
+
+	media, err := s.mediaRepo.GetByID(ctx, id)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	if media == nil {
+		return nil, nil, ErrMediaNotFound
+	}
+
+	file, err := s.storage.Open(ctx, media.FilePath)
+	if err != nil {
+		if errors.Is(err, os.ErrNotExist) {
+			return nil, nil, ErrMediaNotFound
+		}
+		return nil, nil, err
+	}
+
+	return media, file, nil
 }
 
 func (s *MediaService) Delete(

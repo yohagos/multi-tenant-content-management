@@ -296,7 +296,7 @@ func setupRouter(
 		{
 			media.POST("", mediaHandler.Upload)
 			media.GET("", mediaHandler.ListByEntity)
-			//media.GET("/:id", mediaHandler)
+			media.GET("/:id", mediaHandler.GetFile)
 			media.DELETE("/:id", mediaHandler.Delete)
 		}
 

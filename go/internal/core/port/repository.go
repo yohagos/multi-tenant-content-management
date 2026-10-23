@@ -64,5 +64,6 @@ type MediaRepository interface {
 
 type MediaStorage interface {
 	Save(ctx context.Context, file io.Reader, fileName string) (filePath string, fileSize int64, err error)
+	Open(ctx context.Context, filePath string) (io.ReadCloser, error)
 	Delete(ctx context.Context, filePath string) error
 }

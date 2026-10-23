@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"errors"
 	"net/http"
 	"strconv"
 
@@ -78,7 +79,6 @@ func (h *MediaHandler) Upload(c *gin.Context) {
 	c.JSON(http.StatusCreated, media)
 }
 
-
 func (h *MediaHandler) ListByEntity(c *gin.Context) {
 	entityType := domain.MediaEntityType(c.Query("entity_type"))
 	entityID := c.Query("entity_id")
@@ -102,6 +102,34 @@ func (h *MediaHandler) ListByEntity(c *gin.Context) {
 		"data":  media,
 		"total": len(media),
 	})
+}
+
+func (h *MediaHandler) GetFile(c *gin.Context) {
+	media, file, err := h.mediaService.GetFile(
+		c.Request.Context(),
+		c.Param("id"),
+	)
+	if err != nil {
+		switch {
+		case errors.Is(err, service.ErrInvalidMedia):
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		case errors.Is(err, service.ErrMediaNotFound):
+			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		default:
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to load media"})
+		}
+		return
+	}
+	defer file.Close()
+
+	c.Header("Content-Disposition", "inline")
+	c.DataFromReader(
+		http.StatusOK,
+		media.FileSize,
+		media.MimeType,
+		file,
+		nil,
+	)
 }
 
 func (h *MediaHandler) Delete(c *gin.Context) {
