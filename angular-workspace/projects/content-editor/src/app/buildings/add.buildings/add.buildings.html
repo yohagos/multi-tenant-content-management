@@ -49,6 +49,45 @@
           </button>
         </form>
       </mat-step>
+      <mat-step [stepControl]="secondCreateForm" errorMessage="Fill out required fields.">
+        <form [formGroup]="secondCreateForm">
+          <mat-form-field>
+            <mat-label>Street</mat-label>
+            <input matInput formControlName="street">
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>House Number</mat-label>
+            <input matInput formControlName="house_number">
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Postal Code</mat-label>
+            <input matInput formControlName="postal_code">
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>City</mat-label>
+            <input matInput formControlName="city">
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Country</mat-label>
+            <input matInput formControlName="country">
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Latitude</mat-label>
+            <input matInput formControlName="latitude">
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Longitude</mat-label>
+            <input matInput formControlName="longitude">
+          </mat-form-field>
+
+          <button mat-button [disabled]="!secondCreateForm.valid">
+            Save
+          </button>
+          <button mat-button >
+            Cancel
+          </button>
+        </form>
+      </mat-step>
     </mat-stepper>
   </mat-card-content>
 </mat-card>

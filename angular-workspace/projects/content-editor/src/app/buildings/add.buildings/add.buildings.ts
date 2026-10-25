@@ -8,7 +8,9 @@ import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
 import { MatSelectModule } from "@angular/material/select";
 import { MatStepperModule } from "@angular/material/stepper";
-import { BuildingService, BuildingStatus } from 'shared-data-access';
+import { Router } from '@angular/router';
+import { Building, BuildingService, BuildingStatus } from 'shared-data-access';
+import { Snackbar } from "shared-ui";
 
 @Component({
   selector: 'app-add.buildings',
@@ -34,6 +36,8 @@ import { BuildingService, BuildingStatus } from 'shared-data-access';
 })
 export class AddBuildings {
   private readonly _fb = inject(FormBuilder)
+  private readonly _router = inject(Router)
+  private readonly _snackBar = inject(Snackbar)
   private readonly buildingService = inject(BuildingService)
 
   readonly buildingStatus = signal<BuildingStatus[]>([
@@ -61,9 +65,49 @@ export class AddBuildings {
     postal_code: new FormControl('', [Validators.required]),
     city: new FormControl('', [Validators.required]),
     country: new FormControl('', [Validators.required]),
-    latitude: new FormControl('', [Validators.required]),
-    longitude: new FormControl('', [Validators.required]),
+    latitude: new FormControl(''),
+    longitude: new FormControl(''),
   })
 
-  
+  save() {
+    if (!this.firstCreateForm.valid || !this.secondCreateForm.valid) {
+      return
+    }
+
+    let building = this.transformData()
+
+    console.log(`Building to be added : ${building}`)
+
+    this.buildingService.create(building).subscribe({
+      next: (data) => {
+        console.log(`AddBuilding => response from backend : ${data}`)
+        this._snackBar.successSnackBar('Saved new building successfully.')
+      },
+      error: (err) => {
+        console.error(`AddBuilding => Error occurred : ${err}`)
+        this._snackBar.errorSnackBar('An error occurred, please ty again.')
+      },
+      complete: () => {
+        this.backToOverview()
+      }
+    })
+  }
+
+  private transformData(): Building {
+    return {
+      ...this.firstCreateForm.getRawValue(),
+      ...this.secondCreateForm.getRawValue(),
+      status: this.selectedStatus(),
+    } as unknown as Building
+  }
+
+  cancel() {
+    this.firstCreateForm.reset()
+    this.secondCreateForm.reset()
+    this.backToOverview()
+  }
+
+  backToOverview() {
+    this._router.navigate(['/content-editor'])
+  }
 }
