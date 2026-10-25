@@ -27,6 +27,13 @@ export interface Unit {
   deleted_at?: Date
 }
 
+export interface UnitList {
+  data: Unit[],
+  total: number,
+  limit: number,
+  offset: number,
+}
+
 export interface UnitFilter {
   tenant_id?: string
   building_id?: string
