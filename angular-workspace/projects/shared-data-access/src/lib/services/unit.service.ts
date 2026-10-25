@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { API_BASE_URL, Unit } from 'shared-data-access';
+import { API_BASE_URL, Unit, UnitList } from 'shared-data-access';
 
 @Injectable({
   providedIn: 'root',
@@ -23,8 +23,8 @@ export class UnitService {
       )
     }
 
-    list(): Observable<Unit[]> {
-      return this.http.get<Unit[]>(
+    list(): Observable<UnitList> {
+      return this.http.get<UnitList>(
         `${this.baseUrl}/unit`
       )
     }

@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { API_BASE_URL, Building } from 'shared-data-access';
+import { API_BASE_URL, Building, BuildingList } from 'shared-data-access';
 
 @Injectable({
   providedIn: 'root',
@@ -23,8 +23,8 @@ export class BuildingService {
       )
     }
 
-    list(): Observable<Building[]> {
-      return this.http.get<Building[]>(
+    list(): Observable<BuildingList> {
+      return this.http.get<BuildingList>(
         `${this.baseUrl}/building`
       )
     }
