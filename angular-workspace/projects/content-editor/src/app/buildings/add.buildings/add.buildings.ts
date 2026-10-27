@@ -1,6 +1,6 @@
 import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 import { Component, inject, signal } from '@angular/core';
-import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from "@angular/forms";
+import { FormBuilder, FormControl, ReactiveFormsModule, Validators, FormsModule } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
 import { MatCardModule } from "@angular/material/card";
 import { MatCheckboxModule } from "@angular/material/checkbox";
@@ -10,7 +10,7 @@ import { MatSelectModule } from "@angular/material/select";
 import { MatStepperModule } from "@angular/material/stepper";
 import { Router } from '@angular/router';
 import { Building, BuildingService, BuildingStatus } from 'shared-data-access';
-import { Snackbar } from "shared-ui";
+import { SnackbarService } from "shared-ui";
 
 @Component({
   selector: 'app-add.buildings',
@@ -24,6 +24,7 @@ import { Snackbar } from "shared-ui";
     MatStepperModule,
 
     ReactiveFormsModule,
+    FormsModule,
   ],
   templateUrl: './add.buildings.html',
   styleUrl: './add.buildings.scss',
@@ -37,7 +38,7 @@ import { Snackbar } from "shared-ui";
 export class AddBuildings {
   private readonly _fb = inject(FormBuilder)
   private readonly _router = inject(Router)
-  private readonly _snackBar = inject(Snackbar)
+  private readonly _snackBarService = inject(SnackbarService)
   private readonly buildingService = inject(BuildingService)
 
   readonly buildingStatus = signal<BuildingStatus[]>([
@@ -51,7 +52,7 @@ export class AddBuildings {
 
   readonly firstCreateForm  = this._fb.group({
     name: new FormControl('', [Validators.required]),
-    year_build: new FormControl('', [Validators.required]),
+    year_built: new FormControl('', [Validators.required]),
     total_floors: new FormControl('', [Validators.required]),
     total_units: new FormControl('', [Validators.required]),
     description: new FormControl(''),
@@ -81,11 +82,11 @@ export class AddBuildings {
     this.buildingService.create(building).subscribe({
       next: (data) => {
         console.log(`AddBuilding => response from backend : ${data}`)
-        this._snackBar.successSnackBar('Saved new building successfully.')
+        this._snackBarService.successSnackBar('Saved new building successfully.')
       },
       error: (err) => {
         console.error(`AddBuilding => Error occurred : ${err}`)
-        this._snackBar.errorSnackBar('An error occurred, please ty again.')
+        this._snackBarService.errorSnackBar('An error occurred, please ty again.')
       },
       complete: () => {
         this.backToOverview()

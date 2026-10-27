@@ -10,8 +10,8 @@
             <input matInput formControlName="name">
           </mat-form-field>
           <mat-form-field>
-            <mat-label>Year Build</mat-label>
-            <input matInput formControlName="year_build">
+            <mat-label>Year Built</mat-label>
+            <input matInput formControlName="year_built">
           </mat-form-field>
           <mat-form-field>
             <mat-label>Total Floors</mat-label>
@@ -25,22 +25,17 @@
             <mat-label>Description</mat-label>
             <textarea matInput formControlName="description" ></textarea>
           </mat-form-field>
-          <mat-form-field>
-            <mat-label>Status</mat-label>
-            <mat-select
-              [value]="selectedStatus()"
-              (selectionChange)="selectedStatus.set($event.value)">
-              @for (status of buildingStatus(); track status) {
-                <mat-option [value]="status">
-                  {{status}}
-                </mat-option>
-              }
-            </mat-select>
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label>Published</mat-label>
-            <mat-checkbox formControlName="published">Publish</mat-checkbox>
-          </mat-form-field>
+          <mat-select
+            formControlName="status"
+            (selectionChange)="selectedStatus.set($event.value)">
+            @for (status of buildingStatus(); track status) {
+              <mat-option [value]="status">
+                {{status}}
+              </mat-option>
+            }
+          </mat-select>
+          <mat-checkbox formControlName="published">Publish</mat-checkbox>
+
 
           <button mat-button
             [disabled]="!firstCreateForm.valid"
