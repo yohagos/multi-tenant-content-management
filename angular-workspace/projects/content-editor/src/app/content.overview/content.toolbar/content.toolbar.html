@@ -1,0 +1,12 @@
+<div class="wrapper">
+  <mat-toolbar class="toolbar">
+    @for (item of toolbarItems; track item) {
+      <button mat-fab extended class="toolbar-items" (click)="navigateTo(item.route)">
+        <mat-icon> {{item.icon}} </mat-icon>
+        {{item.name}}
+      </button>
+    }
+  </mat-toolbar>
+</div>
+
+<router-outlet></router-outlet>

@@ -1,0 +1,130 @@
+<div class="building-container">
+  @if (isLoadingResults) {
+    <mat-spinner class="spinner"></mat-spinner>
+  } @else {
+    <div class="buildings-table">
+    @if (buildings().data !== null && buildings().data.length > 0) {
+      <mat-form-field>
+        <mat-label>Filter</mat-label>
+        <input matInput (keyup)="applyBuildingFilter($event)" #buildingFilter>
+      </mat-form-field>
+
+      <table mat-table [dataSource]="buildings().data || []">
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Name</th>
+          <td mat-cell *matCellDef="let building">{{building.name}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="year_built">
+          <th mat-header-cell *matHeaderCellDef>Year Built</th>
+          <td mat-cell *matCellDef="let building">{{building.year_built}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="total_floors">
+          <th mat-header-cell *matHeaderCellDef>Total Floors</th>
+          <td mat-cell *matCellDef="let building">{{building.total_floors}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="total_units">
+          <th mat-header-cell *matHeaderCellDef>Total Units</th>
+          <td mat-cell *matCellDef="let building">{{building.total_units}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let building">{{building.status}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="published">
+          <th mat-header-cell *matHeaderCellDef>Published</th>
+          <td mat-cell *matCellDef="let building">{{building.published}}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayColumnsBuilding"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayColumnsBuilding;"></tr>
+
+        <tr *matNoDataRow>
+          <td colspan="4"> No data matching the filter "{{buildingFilter.value}}"</td>
+        </tr>
+      </table>
+    } @else {
+      <mat-card class="empty-table">
+        <mat-card-content>
+          <h3>No buildings found</h3>
+        </mat-card-content>
+      </mat-card>
+    }
+  </div>
+  }
+</div>
+
+@if (units().data !== null && units().data.length > 0) {
+<div class="unit-container">
+    <div class="unit-table">
+      <mat-form-field>
+        <mat-label>Filter</mat-label>
+        <input matInput (keyup)="applyUnitFilter($event)" #unitFilter>
+      </mat-form-field>
+
+      <table mat-table [dataSource]="units().data || []">
+        <ng-container matColumnDef="unit_number">
+          <th mat-header-cell *matHeaderCellDef>Unit Number</th>
+          <td mat-cell *matCellDef="let unit">{{unit.unit_number}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="title">
+          <th mat-header-cell *matHeaderCellDef>Title</th>
+          <td mat-cell *matCellDef="let unit">{{unit.title}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="floor">
+          <th mat-header-cell *matHeaderCellDef>Floor</th>
+          <td mat-cell *matCellDef="let unit">{{unit.floor}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="rooms">
+          <th mat-header-cell *matHeaderCellDef>Rooms</th>
+          <td mat-cell *matCellDef="let unit">{{unit.rooms}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="living_area_sqm">
+          <th mat-header-cell *matHeaderCellDef>Living Area SQM</th>
+          <td mat-cell *matCellDef="let unit">{{unit.living_area_sqm}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="cold_rent">
+          <th mat-header-cell *matHeaderCellDef>Cold Rent</th>
+          <td mat-cell *matCellDef="let unit">{{unit.cold_rent}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="warm_rent">
+          <th mat-header-cell *matHeaderCellDef>Warm Rent</th>
+          <td mat-cell *matCellDef="let unit">{{unit.warm_rent}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let unit">{{unit.status}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="deposit">
+          <th mat-header-cell *matHeaderCellDef>Deposit</th>
+          <td mat-cell *matCellDef="let unit">{{unit.deposit}}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayColumnsUnit"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayColumnsUnit;"></tr>
+
+        <tr *matNoDataRow>
+          <td colspan="4"> No data matching the filter "{{unitFilter.value}}"</td>
+        </tr>
+      </table>
+  </div>
+</div>
+} @else {
+      <mat-card class="empty-table">
+        <mat-card-content>
+          <h3>No units found</h3>
+        </mat-card-content>
+      </mat-card>
+    }

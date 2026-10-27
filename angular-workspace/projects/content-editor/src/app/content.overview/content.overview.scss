@@ -1,0 +1,18 @@
+.empty-table {
+  width: 60%;
+  margin: 3em;
+  display: flex;
+  justify-self: center;
+  align-self: center;
+
+  .mat-mdc-card-content {
+    margin: auto;
+    margin-bottom: 2em;
+  }
+}
+
+.spinner {
+  display: flex;
+  justify-self: center;
+  margin: 7em;
+}
