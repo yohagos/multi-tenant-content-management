@@ -19,7 +19,7 @@ func (s BuildingStatus) IsValid() bool {
 }
 
 type Building struct {
-	ID          string         `db:"id" json:"id"`
+	ID          string         `db:"id" json:"id,omitempty"`
 	TenantID    string         `db:"tenant_id" json:"tenant_id,omitempty"`
 	Name        string         `db:"name" json:"name"`
 	Slug        string         `db:"slug" json:"slug"`
@@ -30,15 +30,15 @@ type Building struct {
 	Country     string         `db:"country" json:"country"`
 	Latitude    *float64       `db:"latitude" json:"latitude,omitempty"`
 	Longitude   *float64       `db:"longitude" json:"longitude,omitempty"`
-	YearBuild   *int           `db:"year_build" json:"year_build"`
+	YearBuilt   *int           `db:"year_built" json:"year_built"`
 	TotalFloors *int           `db:"total_floors" json:"total_floors"`
 	TotalUnits  int            `db:"total_units" json:"total_units"`
 	Description string         `db:"description" json:"description"`
 	Status      BuildingStatus `db:"status" json:"status"`
 	Published   bool           `db:"published" json:"published"`
-	PublishedAt *time.Time     `db:"published_at" jso:"published_at"`
-	CreatedAt   time.Time      `db:"created_at" json:"created_at"`
-	UpdatedAt   time.Time      `db:"updated_at" json:"updated_at"`
+	PublishedAt *time.Time     `db:"published_at" jso:"published_at,omitempty"`
+	CreatedAt   time.Time      `db:"created_at" json:"created_at,omitempty"`
+	UpdatedAt   time.Time      `db:"updated_at" json:"updated_at,omitempty"`
 	DeletedAt   *time.Time     `db:"deleted_at" json:"deleted_at,omitempty"`
 }
 

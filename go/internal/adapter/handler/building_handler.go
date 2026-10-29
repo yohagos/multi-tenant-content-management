@@ -6,21 +6,30 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/yohagos/multi-content-management/internal/core/domain"
 	"github.com/yohagos/multi-content-management/internal/core/service"
+	"github.com/yohagos/multi-content-management/pkg/logger"
 	"github.com/yohagos/multi-content-management/pkg/mapper"
+	"go.uber.org/zap"
 )
 
 type BuildingHandler struct {
 	buildingService *service.BuildingService
+	logger *logger.Logger
 }
 
-func NewBuildingHandler(buildingService *service.BuildingService) *BuildingHandler {
+func NewBuildingHandler(buildingService *service.BuildingService, logger *logger.Logger) *BuildingHandler {
 	return &BuildingHandler{
 		buildingService: buildingService,
+		logger: logger,
 	}
 }
 
 func (h *BuildingHandler) Create(c *gin.Context) {
 	var building domain.Building
+
+	h.logger.Info(
+		"Building Create Request : ",
+		zap.Any("Request => ", c.Request.Body),
+	)
 
 	if err := c.ShouldBindJSON(&building); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

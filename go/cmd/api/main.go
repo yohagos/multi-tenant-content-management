@@ -108,7 +108,7 @@ func main() {
 	contentHandler := handler.NewContentHandler(contentService)
 	authHandler := handler.NewAuthHandler(authService)
 	amenityHandler := handler.NewAmenityHandler(amenityService)
-	buildingHandler := handler.NewBuildingHandler(buildingService)
+	buildingHandler := handler.NewBuildingHandler(buildingService, log)
 	mediaHandler := handler.NewMediaHandler(mediaService)
 	unitHandler := handler.NewUnitHandler(unitService)
 
