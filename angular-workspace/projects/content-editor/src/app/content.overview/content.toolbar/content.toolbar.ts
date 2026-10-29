@@ -33,7 +33,6 @@ export class ContentToolbar {
   ];
 
   navigateTo(link: string) {
-    console.log(link);
     this._router.navigate([link]);
   }
 }
