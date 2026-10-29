@@ -9,6 +9,16 @@ form {
     width: 60%;
   }
 
+  .status {
+    width: 60%;
+    display: flex;
+    flex-direction: row;
+
+    mat-select {
+      margin: auto;
+    }
+  }
+
   button {
     margin: 2em;
   }

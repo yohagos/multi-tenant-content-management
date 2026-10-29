@@ -23,19 +23,22 @@
           </mat-form-field>
           <mat-form-field>
             <mat-label>Description</mat-label>
-            <textarea matInput formControlName="description" ></textarea>
+            <textarea matInput formControlName="description" cols="10" rows="12"></textarea>
           </mat-form-field>
-          <mat-select
-            formControlName="status"
-            (selectionChange)="selectedStatus.set($event.value)">
-            @for (status of buildingStatus(); track status) {
-              <mat-option [value]="status">
-                {{status}}
-              </mat-option>
-            }
-          </mat-select>
-          <mat-checkbox formControlName="published">Publish</mat-checkbox>
+          <mat-form-field>
+            <mat-label>Status</mat-label>
+            <select
+              matNativeControl
+              formControlName="status">
+                @for (status of buildingStatus(); track status) {
+                  <option [value]="status">
+                    {{status}}
+                  </option>
+                }
+            </select>
+          </mat-form-field>
 
+          <mat-checkbox formControlName="published">Publish</mat-checkbox>
 
           <button mat-button
             [disabled]="!firstCreateForm.valid"
@@ -75,10 +78,10 @@
             <input matInput formControlName="longitude">
           </mat-form-field>
 
-          <button mat-button [disabled]="!secondCreateForm.valid">
+          <button mat-raised-button [disabled]="!secondCreateForm.valid" (click)="save()">
             Save
           </button>
-          <button mat-button >
+          <button mat-flat-button (click)="cancel()">
             Cancel
           </button>
         </form>

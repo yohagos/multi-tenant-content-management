@@ -1,6 +1,6 @@
 import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 import { Component, inject, signal } from '@angular/core';
-import { FormBuilder, FormControl, ReactiveFormsModule, Validators, FormsModule } from "@angular/forms";
+import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
 import { MatCardModule } from "@angular/material/card";
 import { MatCheckboxModule } from "@angular/material/checkbox";
@@ -24,7 +24,6 @@ import { SnackbarService } from "shared-ui";
     MatStepperModule,
 
     ReactiveFormsModule,
-    FormsModule,
   ],
   templateUrl: './add.buildings.html',
   styleUrl: './add.buildings.scss',
@@ -46,28 +45,27 @@ export class AddBuildings {
     'published',
     'archived',
   ])
-  readonly selectedStatus = signal<BuildingStatus>('draft')
 
   readonly publishedDateSignal = signal<Date>
 
   readonly firstCreateForm  = this._fb.group({
-    name: new FormControl('', [Validators.required]),
-    year_built: new FormControl('', [Validators.required]),
-    total_floors: new FormControl('', [Validators.required]),
-    total_units: new FormControl('', [Validators.required]),
-    description: new FormControl(''),
-    status: new FormControl('', [Validators.required]),
-    published: new FormControl(false, [Validators.required]),
+    name: ['', Validators.required],
+    year_built: ['', Validators.required],
+    total_floors: ['', Validators.required],
+    total_units: ['', Validators.required],
+    description: [''],
+    status: this._fb.control<BuildingStatus | null>(null, Validators.required),
+    published: [false, Validators.required]
   })
 
   readonly secondCreateForm  = this._fb.group({
-    street: new FormControl('', [Validators.required]),
-    house_number: new FormControl('', [Validators.required]),
-    postal_code: new FormControl('', [Validators.required]),
-    city: new FormControl('', [Validators.required]),
-    country: new FormControl('', [Validators.required]),
-    latitude: new FormControl(''),
-    longitude: new FormControl(''),
+    street: ['', Validators.required],
+    house_number: ['', Validators.required],
+    postal_code: ['', Validators.required],
+    city: ['', Validators.required],
+    country: ['', Validators.required],
+    latitude: [''],
+    longitude: [''],
   })
 
   save() {
@@ -76,8 +74,6 @@ export class AddBuildings {
     }
 
     let building = this.transformData()
-
-    console.log(`Building to be added : ${building}`)
 
     this.buildingService.create(building).subscribe({
       next: (data) => {
@@ -95,11 +91,16 @@ export class AddBuildings {
   }
 
   private transformData(): Building {
-    return {
+    var building = {
       ...this.firstCreateForm.getRawValue(),
       ...this.secondCreateForm.getRawValue(),
-      status: this.selectedStatus(),
     } as unknown as Building
+
+    building.slug = building.name + '-' + building.city + '-' + building.street
+
+    console.log(`Building with slug => ${JSON.stringify(building)}`)
+
+    return building
   }
 
   cancel() {
@@ -109,6 +110,6 @@ export class AddBuildings {
   }
 
   backToOverview() {
-    this._router.navigate(['/content-editor'])
+    this._router.navigate(['content-editor'])
   }
 }
