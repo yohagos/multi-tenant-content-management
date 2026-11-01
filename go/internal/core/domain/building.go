@@ -1,6 +1,9 @@
 package domain
 
-import "time"
+import (
+	"database/sql"
+	"time"
+)
 
 type BuildingStatus string
 
@@ -20,7 +23,7 @@ func (s BuildingStatus) IsValid() bool {
 
 type Building struct {
 	ID          string         `db:"id" json:"id,omitempty"`
-	TenantID    string         `db:"tenant_id" json:"tenant_id,omitempty"`
+	TenantID    sql.NullString         `db:"tenant_id" json:"tenant_id,omitempty"`
 	Name        string         `db:"name" json:"name"`
 	Slug        string         `db:"slug" json:"slug"`
 	Street      string         `db:"street" json:"street"`

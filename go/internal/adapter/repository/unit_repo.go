@@ -100,7 +100,7 @@ func (r *unitRepository) GetByTitleUnitNumber(ctx context.Context, title string,
 }
 
 func (r *unitRepository) List(ctx context.Context, filter *domain.UnitFilter) ([]domain.Unit, int, error) {
-	conditions := []string{"deleted IS NULL"}
+	conditions := []string{"deleted_at IS NULL"}
 	args := []interface{}{}
 	argIndex := 1
 

@@ -7,6 +7,7 @@ import (
 
 	"github.com/yohagos/multi-content-management/internal/core/domain"
 	"github.com/yohagos/multi-content-management/internal/core/port"
+	"github.com/yohagos/multi-content-management/pkg/logger"
 )
 
 var (
@@ -17,11 +18,13 @@ var (
 
 type BuildingService struct {
 	buildingRepo port.BuildingRepository
+	logger *logger.Logger
 }
 
-func NewBuildingService(buildingRepo port.BuildingRepository) *BuildingService {
+func NewBuildingService(buildingRepo port.BuildingRepository, logger *logger.Logger) *BuildingService {
 	return &BuildingService{
 		buildingRepo: buildingRepo,
+		logger: logger,
 	}
 }
 

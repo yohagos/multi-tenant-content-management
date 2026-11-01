@@ -54,7 +54,7 @@ func (r *userRepository) Create(ctx context.Context, user *domain.User) error {
 
 func (r *userRepository) GetByID(ctx context.Context, id string) (*domain.User, error) {
 	query := `
-		SELECT is, tenant_id, email, password_hash, first_name, last_name, role,
+		SELECT id, tenant_id, email, password_hash, first_name, last_name, role,
 		active, last_login_at, created_at, updated_at, deleted_at 
 		FROM users
 		WHERE id = $1 AND deleted_at IS NULL
