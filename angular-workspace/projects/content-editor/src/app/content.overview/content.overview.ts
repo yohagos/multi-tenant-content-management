@@ -2,6 +2,7 @@ import { Component, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { MatButtonModule } from "@angular/material/button";
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginator, MatPaginatorModule } from "@angular/material/paginator";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
@@ -16,6 +17,7 @@ import { BuildingList, BuildingService, ContentService, UnitList, UnitService } 
     MatButtonModule,
     MatCardModule,
     MatFormFieldModule,
+    MatIconModule,
     MatInputModule,
     MatPaginatorModule,
     MatProgressSpinnerModule,
@@ -64,11 +66,25 @@ export class ContentOverview implements OnInit {
 
   applyBuildingFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value
-    this.buildings()?.data.filter(a => a.name.toLowerCase().includes(filterValue))
+
+    this.buildings()?.data.filter(a => filterValue !== null ? a.name.toLowerCase().includes(filterValue) : '')
+
+    /* this.buildings.update(
+      buildings => ({
+        ...buildings,
+        data: buildings.data.filter(building => building.name.toLowerCase().includes(filterValue))
+      })
+    ) */
   }
 
-  applyUnitFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value
-    this.buildings()?.data.filter(a => a.name.toLowerCase().includes(filterValue))
+  applyUnitFilter(value: string) {
+    const filterValue = value.toLowerCase()
+
+    this.units.update(
+      units => ({
+        ...units,
+        data: units.data.filter(unit => unit.title.toLowerCase().includes(filterValue))
+      })
+    )
   }
 }
