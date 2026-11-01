@@ -82,7 +82,7 @@ export class AddBuildings {
       },
       error: (err) => {
         console.error(`AddBuilding => Error occurred : ${err}`)
-        this._snackBarService.errorSnackBar('An error occurred, please ty again.')
+        this._snackBarService.errorSnackBar(err.Error())
       },
       complete: () => {
         this.backToOverview()
@@ -94,6 +94,15 @@ export class AddBuildings {
     var building = {
       ...this.firstCreateForm.getRawValue(),
       ...this.secondCreateForm.getRawValue(),
+      year_built: Number(this.firstCreateForm.getRawValue().year_built),
+      total_floors: Number(this.firstCreateForm.getRawValue().total_floors),
+      total_units: Number(this.firstCreateForm.getRawValue().year_built),
+      latitude: this.secondCreateForm.getRawValue().latitude
+        ? Number(this.secondCreateForm.getRawValue().latitude)
+        : null,
+      longitude: this.secondCreateForm.getRawValue().longitude
+        ? Number(this.secondCreateForm.getRawValue().longitude)
+        : null,
     } as unknown as Building
 
     building.slug = building.name + '-' + building.city + '-' + building.street
