@@ -34,6 +34,8 @@ type Config struct {
 
 	AdminEmail string `mapstructure:"ADMIN_EMAIL"`
 	AdminPassword string `mapstructure:"ADMIN_PASSWORD"`
+
+	StoragePath   string        `mapstructure:"STORAGE_PATH"`
 }
 
 func Load() (*Config, error) {
