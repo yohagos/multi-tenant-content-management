@@ -1,0 +1,11 @@
+<div class="auth-container">
+  <div class="auth-card" [class.flipped]="authMaskService.isLogin()">
+    <div class="auth-face auth-front">
+      <app-login></app-login>
+    </div>
+
+    <div class="auth-face auth-back">
+      <app-register></app-register>
+    </div>
+  </div>
+</div>

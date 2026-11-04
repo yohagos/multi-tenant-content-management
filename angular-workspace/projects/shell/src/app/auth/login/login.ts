@@ -5,7 +5,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { AuthService } from 'shared-data-access';
+import { AuthService, LoginResponse, TokenService } from 'shared-data-access';
+import { AuthMask } from '../services/auth.mask';
 
 @Component({
   selector: 'app-login',
@@ -24,6 +25,8 @@ import { AuthService } from 'shared-data-access';
 export class Login {
   private readonly fb = inject(FormBuilder)
   private readonly authService = inject(AuthService)
+  private readonly tokenService = inject(TokenService)
+  readonly authMaskService = inject(AuthMask)
 
   readonly loginForm = this.fb.group({
     email: new FormControl('', [Validators.required, Validators.email]),
@@ -39,16 +42,22 @@ export class Login {
     const data = this.loginForm.getRawValue()
     let email = data['email'] || ''
     let password = data['password'] || ''
-    console.log(`Login Request => ${data.email} ${data.password}`)
 
     if ((email !== null || email !== '') && (password !== null || password !== '')) {
       this.authService.login(email, password).subscribe({
-        next: (response) => {
-          console.log(`Login => User ${email} logged in successfully!!`)
-          console.log(`Login => Backend Response : ${response}`)
+        next: (response: LoginResponse) => {
+          this.tokenService.setTokens(response)
         },
         error: (err) => console.error('Login => error occurred : ', err)
       })
     }
   }
+
+  logout() {
+    this.tokenService.clear()
+    this.authService.logout()
+  }
+
 }
+
+

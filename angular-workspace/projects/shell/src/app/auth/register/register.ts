@@ -7,6 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from "@angular/material/input";
 
 import { AuthService, RegisterRequest } from 'shared-data-access';
+import { AuthMask } from '../services/auth.mask';
 
 @Component({
   selector: 'app-register',
@@ -25,6 +26,7 @@ import { AuthService, RegisterRequest } from 'shared-data-access';
 export class Register {
   private readonly fb = inject(FormBuilder)
   private readonly authService = inject(AuthService)
+  readonly authMaskService = inject(AuthMask)
 
   readonly registerForm = this.fb.group({
     first_name: new FormControl('', [Validators.minLength(3)]),
@@ -39,10 +41,7 @@ export class Register {
       this.registerForm.markAllAsTouched()
       return
     }
-
     const data = this.registerForm.getRawValue()
-
-    console.log(data)
     this.authService.register(data as RegisterRequest).subscribe({
       next: response => {
         console.log(`Register reponse for user => ${response}`)

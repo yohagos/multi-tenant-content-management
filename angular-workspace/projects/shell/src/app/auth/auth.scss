@@ -1,0 +1,31 @@
+.auth-container {
+  width: 100%;
+  perspective: 1000px;
+}
+
+.auth-card {
+  position: relative;
+  width: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.6s ease;
+}
+
+.auth-card.flipped {
+  transform: rotateY(180deg);
+}
+
+.auth-face {
+  width: 100%;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.auth-front {
+  position: relative;
+}
+
+.auth-back {
+  position: absolute;
+  inset: 0;
+  transform: rotateY(180deg);
+}

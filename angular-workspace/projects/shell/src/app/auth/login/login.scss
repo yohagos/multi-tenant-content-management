@@ -1,11 +1,11 @@
 .card {
   margin: 2em auto;
-  height: 20em;
+  height: 34em;
   width: 80%;
 }
 
 .wrapper {
-  margin: auto 1em;
+  margin: auto 0;
 }
 
 .left-section {
@@ -40,16 +40,20 @@
 }
 
 .login {
-  padding: 1.5em;
+  padding: 2.5em;
 }
 
 .fields {
   display: flex;
   flex-direction: column;
-  width: 80%;
+  width: 90%;
   margin: auto;
 }
 
 .submit-btn {
   float: right;
+}
+
+.login-screen {
+  margin: 1em 2em;
 }
