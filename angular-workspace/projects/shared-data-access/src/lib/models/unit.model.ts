@@ -1,4 +1,5 @@
-export type UnitStatus = 'draft' | 'available' | 'reserved' | 'rented' | 'archived'
+export type UnitStatus = 'draft' | 'available'
+| 'reserved' | 'rented' | 'archived'
 
 export interface Unit {
   id?: string
@@ -19,7 +20,7 @@ export interface Unit {
   available_from: Date
   status: UnitStatus
   published: boolean
-  published_at: Date
+  published_at?: Date
   title: string
   description: string
   created_at?: Date

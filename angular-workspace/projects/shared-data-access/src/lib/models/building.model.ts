@@ -12,7 +12,7 @@ export interface Building {
   country: string
   latitude?: number
   longitude?: number
-  year_build: number
+  year_built: number
   total_floors: number
   total_units: number
   description: string
@@ -38,5 +38,5 @@ export interface BuildingFilter {
   search?: string
   city?: string
   status?: string
-  published: boolean
+  published?: boolean
 }
