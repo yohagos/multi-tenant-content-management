@@ -1,3 +1,11 @@
+mat-card {
+  width: 90%;
+  display: flex;
+  justify-content: center;
+  align-self: center;
+  margin: 2em  auto;
+}
+
 form {
   display: flex;
   flex-direction: column;
@@ -21,5 +29,9 @@ form {
 
   button {
     margin: 2em;
+  }
+
+  textarea {
+    resize: none;
   }
 }

@@ -77,11 +77,9 @@ export class AddBuildings {
 
     this.buildingService.create(building).subscribe({
       next: (data) => {
-        console.log(`AddBuilding => response from backend : ${data}`)
         this._snackBarService.successSnackBar('Saved new building successfully.')
       },
       error: (err) => {
-        console.error(`AddBuilding => Error occurred : ${err}`)
         this._snackBarService.errorSnackBar(err.Error())
       },
       complete: () => {
@@ -106,8 +104,6 @@ export class AddBuildings {
     } as unknown as Building
 
     building.slug = building.name + '-' + building.city + '-' + building.street
-
-    console.log(`Building with slug => ${JSON.stringify(building)}`)
 
     return building
   }
