@@ -1,25 +1,57 @@
 <mat-toolbar class="toolbar">
-  @for (item of items; track item.name) {
+  <!-- @for (item of visibleItems(); track item.name) {
     <button matButton [matMenuTriggerFor]="menu">
       {{ item.name }}
     </button>
   }
 
   <mat-menu #menu="matMenu">
-    @for (item of items; track item.name) {
+    @for (item of visibleItems(); track item.name) {
       @for (link of item.menu.links; track link.link) {
         <button mat-menu-item [routerLink]="link.link">
           {{ link.name }}
         </button>
       }
     }
-  </mat-menu>
+  </mat-menu> -->
 
-  <button class="theme-switch" mat-icon-button (click)="themeService.toggle()">
-    @if (themeService.theme() === 'light') {
-      <mat-icon>dark_mode</mat-icon>
-    } @else {
-      <mat-icon>light_mode</mat-icon>
+  @for (item of visibleItems(); track item.name) {
+    <button
+      matButton
+      [matMenuTriggerFor]="menu">
+      @if (item.icon) {
+        <mat-icon>{{item.icon}}</mat-icon>
+      }
+
+      {{item.name}}
+    </button>
+
+    <mat-menu #menu="matMenu">
+      @for (link of item.menu.links; track link.link) {
+        <button
+          mat-menu-item
+          [routerLink]="link.link">
+          {{link.name}}
+        </button>
+      }
+    </mat-menu>
+  }
+
+  <div class="container">
+    @if (tokenService.isAuthenticated()) {
+      <button mat-icon-button (click)="logout()">
+        <mat-icon>logout</mat-icon>
+      </button>
     }
-  </button>
+
+    <button mat-icon-button (click)="themeService.toggle()">
+      @if (themeService.theme() === 'light') {
+        <mat-icon>dark_mode</mat-icon>
+      } @else {
+        <mat-icon>light_mode</mat-icon>
+      }
+    </button>
+  </div>
+
+
 </mat-toolbar>

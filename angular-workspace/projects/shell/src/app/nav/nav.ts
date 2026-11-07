@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { MatButton, MatIconButton } from "@angular/material/button";
 import { MatButtonToggleModule } from "@angular/material/button-toggle";
@@ -7,6 +7,7 @@ import { MatMenuModule } from "@angular/material/menu";
 import { MatToolbarModule } from "@angular/material/toolbar";
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ThemeService } from '../services/theme-service';
+import { AuthService, TokenService } from 'shared-data-access';
 
 export interface Links {
   name: string
@@ -45,6 +46,8 @@ export interface NavLinks {
 })
 export class Nav {
   private readonly router = inject(Router)
+  readonly tokenService = inject(TokenService)
+  private readonly authService = inject(AuthService)
   readonly themeService = inject(ThemeService)
   theme: string = 'light'
 
@@ -88,6 +91,10 @@ export class Nav {
       menu: {
         title: 'content-home',
         links: [
+          {
+            name: 'Overview',
+            link: 'content-editor/overview',
+          },
         ]
       }
     },
@@ -103,7 +110,37 @@ export class Nav {
     },
   ]
 
+  readonly visibleItems = computed(() => {
+    const user = this.tokenService.getUser()
+
+    if (!user) {
+      return this.items.filter(item => item.name === 'Home')
+    }
+
+    switch (user.role) {
+      case 'admin':
+        return this.items
+
+      case 'editor':
+        return this.items.filter(items => ['Home', 'Content Editor'].includes(items.name))
+
+      case 'tenant':
+        return this.items.filter(items => ['Home', 'Content Editor'].includes(items.name))
+
+      case 'public':
+      default:
+        return this.items.filter(item => item.name === 'Home')
+    }
+  })
+
   navigate(link: string) {
     this.router.navigate([link])
+  }
+
+  logout() {
+    this.tokenService.clear()
+    this.authService.logout()
+
+    this.router.navigate([''])
   }
 }
