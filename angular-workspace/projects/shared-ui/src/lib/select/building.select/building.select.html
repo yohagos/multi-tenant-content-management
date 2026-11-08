@@ -1,0 +1,19 @@
+<button mat-raised-button class="trigger" (click)="toggle()">
+  @if (selectedBuilding(); as selected) {
+    <strong>{{ selected.name }}</strong>
+    <span class="address"> {{ selected.street }} {{ selected.house_number }} | {{ selected.city }} | {{ selected.country }} </span>
+  } @else {
+    <span class="placeholder"> Choose Building </span>
+  }
+</button>
+
+<ng-template #dropdownTemplate>
+  <div class="dropdown">
+    @for (item of buildingList(); track item.id) {
+      <div class="option" (click)="select(item)">
+        <strong>{{ item.name }}</strong>
+    <span class="address"> {{ item.street }} {{ item.house_number }} | {{ item.city }} | {{ item.country }} </span>
+      </div>
+    }
+  </div>
+</ng-template>
