@@ -1,1 +1,78 @@
-<p>add.unit works!</p>
+<mat-card appearance="outlined">
+  <mat-card-content>
+    <mat-stepper #stepper>
+      <mat-step [stepControl]="buildingForm" errorMessage="Choose a building">
+        <ng-template matStepLabel>Choose a Building</ng-template>
+
+        <div class="select-wrapper">
+          <app-building-select></app-building-select>
+        </div>
+        <div class="btns">
+          <button mat-raised-button [disabled]="chosenBuilding === null" matStepperNext>Next</button>
+        </div>
+
+      </mat-step>
+
+      <mat-step [stepControl]="firstForm" errorMessage="Fill required fields.">
+        <form [formGroup]="firstForm">
+          <ng-template matStepLabel>General Information</ng-template>
+          <mat-form-field>
+            <mat-label>Unit Number</mat-label>
+            <input matInput formControlName="unit_number" />
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Title</mat-label>
+            <input matInput [value]="unitTitle()" disabled/>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Description</mat-label>
+            <textarea
+              matInput
+              formControlName="unit_number"
+              cols="12"
+              rows="10"
+              (resize)="(false)"
+            ></textarea>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Floor No.</mat-label>
+            <input matInput formControlName="floor" />
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Rooms</mat-label>
+            <input matInput formControlName="rooms" />
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Bedrooms</mat-label>
+            <input matInput formControlName="bedrooms" />
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Bathrooms</mat-label>
+            <input matInput formControlName="bathrooms" />
+          </mat-form-field>
+
+          <button mat-button matStepperPrevious>Previous</button>
+          <button mat-button [disabled]="!firstForm.valid" matStepperNext>Next</button>
+        </form>
+      </mat-step>
+      <mat-step [stepControl]="secondForm" errorMessage="Fill required fields.">
+        <form [formGroup]="secondForm">
+          <ng-template matStepLabel>Area Information</ng-template>
+
+          <button mat-button matStepperPrevious>Previous</button>
+          <button mat-button [disabled]="!secondForm.valid" matStepperNext>Next</button>
+        </form>
+      </mat-step>
+      <mat-step [stepControl]="thirdForm" errorMessage="Fill required fields.">
+        <form [formGroup]="thirdForm">
+          <ng-template matStepLabel>Pricing, Availability, etc.</ng-template>
+
+          <button mat-raised-button
+             [disabled]="chosenBuilding === null && !firstForm.valid && !secondForm.valid && !thirdForm.valid"
+             (click)="save()">Save</button>
+          <button mat-flat-button (click)="cancel()">Cancel</button>
+        </form>
+      </mat-step>
+    </mat-stepper>
+  </mat-card-content>
+</mat-card>
