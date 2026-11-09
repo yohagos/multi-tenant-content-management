@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, inject, OnInit, signal } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -9,7 +9,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatStepperModule } from '@angular/material/stepper';
 import { Router } from '@angular/router';
 import { Building, BuildingFilter, BuildingList, BuildingService, Unit, UnitService, UnitStatus } from 'shared-data-access';
-import { SnackbarService, BuildingSelect, BuildingTransferService } from 'shared-ui';
+import { SnackbarService, BuildingSelect, BuildingTransferService, UnitStatusTransferService, UnitStatusSelect } from 'shared-ui';
 
 @Component({
   selector: 'app-add.unit',
@@ -24,6 +24,7 @@ import { SnackbarService, BuildingSelect, BuildingTransferService } from 'shared
 
     ReactiveFormsModule,
     BuildingSelect,
+    UnitStatusSelect,
   ],
   standalone: true,
   templateUrl: './add.unit.html',
@@ -36,10 +37,13 @@ export class AddUnit implements OnInit, AfterViewInit {
   private readonly _unitService = inject(UnitService)
   private readonly _buildingService = inject(BuildingService)
   private readonly _buildingTransferService = inject(BuildingTransferService)
+  private readonly _unitStatusTransferService = inject(UnitStatusTransferService)
 
   chosenBuilding: Partial<Building> | null = null
 
-  unitTitle = signal<string>('')
+  unitTitle = ''
+
+  unit_title = new FormControl({value: '', disabled: true})
 
   readonly buildings = signal<BuildingList>({
     data: [],
@@ -63,13 +67,15 @@ export class AddUnit implements OnInit, AfterViewInit {
     'archived',
   ])
 
+  isValidUnitStatus = (value: string): value is UnitStatus =>
+    this.unitStatus().includes(value as UnitStatus)
+
   readonly buildingForm = this._fb.group({
     building_id: ['', Validators.required]
   })
 
   readonly firstForm = this._fb.group({
     unit_number: ['', Validators.required],
-    /* title: [''], */
     description: [''],
     floor: ['', Validators.required],
     rooms: ['', Validators.required],
@@ -107,15 +113,23 @@ export class AddUnit implements OnInit, AfterViewInit {
       next: (data) => {
         if (data !== null && data.id !== undefined) {
           this.chosenBuilding = data
-          this.unitTitle.set(data.name + '-')
+          this.unitTitle = data.name + '-'
+          this.unit_title.setValue(data.name + '-')
         }
       }
     })
 
     this.firstForm.controls.unit_number.valueChanges.subscribe((value) => {
-      console.log(value)
       if (value !== null) {
-        this.unitTitle().concat(value)
+        this.unit_title.setValue(this.unitTitle + value)
+      }
+    })
+
+    this._unitStatusTransferService.selectedStatus$.subscribe((value) => {
+      if (value !== null) {
+        if (this.isValidUnitStatus(value)) {
+          this.thirdForm.controls.status.setValue(value)
+        }
       }
     })
   }

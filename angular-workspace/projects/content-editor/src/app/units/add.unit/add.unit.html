@@ -22,13 +22,13 @@
           </mat-form-field>
           <mat-form-field>
             <mat-label>Title</mat-label>
-            <input matInput [value]="unitTitle()" disabled/>
+            <input matInput [formControl]="unit_title"/>
           </mat-form-field>
           <mat-form-field>
             <mat-label>Description</mat-label>
             <textarea
               matInput
-              formControlName="unit_number"
+              formControlName="description"
               cols="12"
               rows="10"
               (resize)="(false)"
@@ -51,26 +51,83 @@
             <input matInput formControlName="bathrooms" />
           </mat-form-field>
 
-          <button mat-button matStepperPrevious>Previous</button>
-          <button mat-button [disabled]="!firstForm.valid" matStepperNext>Next</button>
+          <div class="btns">
+            <button mat-button matStepperPrevious>Previous</button>
+            <button mat-button [disabled]="!firstForm.valid" matStepperNext>Next</button>
+          </div>
         </form>
       </mat-step>
       <mat-step [stepControl]="secondForm" errorMessage="Fill required fields.">
         <form [formGroup]="secondForm">
           <ng-template matStepLabel>Area Information</ng-template>
 
-          <button mat-button matStepperPrevious>Previous</button>
-          <button mat-button [disabled]="!secondForm.valid" matStepperNext>Next</button>
+          <mat-form-field>
+            <mat-label>Living Area in sqm</mat-label>
+            <input matInput formControlName="living_area_sqm" />
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Total Area in sqm</mat-label>
+            <input matInput formControlName="total_area_sqm" />
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Balcony Area in sqm</mat-label>
+            <input matInput formControlName="balcony_area_sqm" />
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Ceiling height in m</mat-label>
+            <input matInput formControlName="ceiling_height_m" />
+          </mat-form-field>
+
+          <div class="btns">
+            <button mat-button matStepperPrevious>Previous</button>
+            <button mat-button [disabled]="!secondForm.valid" matStepperNext>Next</button>
+          </div>
         </form>
       </mat-step>
       <mat-step [stepControl]="thirdForm" errorMessage="Fill required fields.">
         <form [formGroup]="thirdForm">
           <ng-template matStepLabel>Pricing, Availability, etc.</ng-template>
 
-          <button mat-raised-button
+          <mat-form-field>
+            <mat-label>Cold Rent</mat-label>
+            <input matInput formControlName="cold_rent" />
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Warm Rent</mat-label>
+            <input matInput formControlName="warm_rent" />
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Deposit</mat-label>
+            <input matInput formControlName="deposit" />
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Available From</mat-label>
+            <input matInput formControlName="available_from" />
+          </mat-form-field>
+
+
+          <app-unit-status-select></app-unit-status-select>
+          <!-- status -->
+
+          <!--
+
+          published...
+
+          <mat-form-field>
+            <mat-label></mat-label>
+            <input matInput formControlName="bedrooms" />
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Bathrooms</mat-label>
+            <input matInput formControlName="bathrooms" />
+          </mat-form-field> -->
+
+          <div class="btns">
+            <button mat-raised-button
              [disabled]="chosenBuilding === null && !firstForm.valid && !secondForm.valid && !thirdForm.valid"
              (click)="save()">Save</button>
-          <button mat-flat-button (click)="cancel()">Cancel</button>
+            <button mat-flat-button (click)="cancel()">Cancel</button>
+          </div>
         </form>
       </mat-step>
     </mat-stepper>
