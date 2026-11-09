@@ -1,0 +1,17 @@
+<button mat-raised-button class="trigger" (click)="toggle()">
+  @if (selectedStatus(); as status) {
+    <strong> {{ status }} </strong>
+  } @else {
+    <span class="placeholder"> Status </span>
+  }
+</button>
+
+<ng-template #dropdownTemplate>
+  <div class="dropdown">
+    @for (item of statusList(); track item) {
+      <div class="option" (click)="select(item)">
+        {{ item }}
+      </div>
+    }
+  </div>
+</ng-template>
