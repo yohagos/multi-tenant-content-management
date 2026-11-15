@@ -1,0 +1,5 @@
+{
+  "tenant-admin": "/tenant-admin/remoteEntry.json",
+  "content-editor": "/content-editor/remoteEntry.json",
+  "public-view": "/public-view/remoteEntry.json"
+}
