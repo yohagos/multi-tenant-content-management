@@ -1,9 +1,12 @@
-import { AfterViewInit, Component, inject, OnInit, signal } from '@angular/core';
+import { AfterViewInit, Component, inject, OnInit, signal, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatNativeDateModule, provideNativeDateAdapter } from "@angular/material/core";
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatStepperModule } from '@angular/material/stepper';
@@ -12,12 +15,15 @@ import { Building, BuildingFilter, BuildingList, BuildingService, Unit, UnitServ
 import { SnackbarService, BuildingSelect, BuildingTransferService, UnitStatusTransferService, UnitStatusSelect } from 'shared-ui';
 
 @Component({
-  selector: 'app-add.unit',
+  selector: 'app-add-unit',
   imports: [
     MatButtonModule,
     MatCardModule,
     MatCheckboxModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
     MatFormFieldModule,
+    MatIconModule,
     MatInputModule,
     MatSelectModule,
     MatStepperModule,
@@ -29,6 +35,10 @@ import { SnackbarService, BuildingSelect, BuildingTransferService, UnitStatusTra
   standalone: true,
   templateUrl: './add.unit.html',
   styleUrl: './add.unit.scss',
+  providers: [
+    MatDatepickerModule,
+    MatNativeDateModule,
+  ]
 })
 export class AddUnit implements OnInit, AfterViewInit {
   private readonly _fb = inject(FormBuilder)
@@ -96,7 +106,7 @@ export class AddUnit implements OnInit, AfterViewInit {
     deposit: ['', Validators.required],
     available_from: ['', Validators.required],
     status: ['', Validators.required],
-    published: ['', Validators.required],
+    published: [false, Validators.required],
     published_at: [''],
   })
 
