@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { loadRemoteModule } from '@angular-architects/native-federation';
-import { Nav } from './nav/nav';
 import { Home } from './home/home';
 
 export const routes: Routes = [
@@ -9,6 +8,18 @@ export const routes: Routes = [
     component: Home,
   },
   {
+    path: 'tenant-admin',
+    loadChildren: () => loadRemoteModule('tenant-admin', './Routes').then((m) => m.routes),
+  },
+  {
+    path: 'content-editor',
+    loadChildren: () => loadRemoteModule('content-editor', './Routes').then((m) => m.routes),
+  },
+  {
+    path: 'public-view',
+    loadChildren: () => loadRemoteModule('public-view', './Routes').then((m) => m.routes),
+  },
+  /* {
     path: 'tenant-admin',
     loadChildren: () => loadRemoteModule({
       remoteEntry: 'http://localhost:4201/remoteEntry.js',
@@ -31,5 +42,5 @@ export const routes: Routes = [
       remoteName: 'public-view',
       exposedModule: './Routes',
     }).then(m => m.routes),
-  },
+  }, */
 ];
