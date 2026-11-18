@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { LoginResponse } from '../models/login-response.model';
-import { User } from 'shared-data-access';
+import { User } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root',
