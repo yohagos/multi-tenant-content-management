@@ -98,7 +98,7 @@ func main() {
 	tenantService := service.NewTenantService(tenantRepo, cacheRepo, publisher)
 	contentService := service.NewContentService(contentRepo, cacheRepo, publisher)
 	amenityService := service.NewAmenityService(amenityRepo)
-	buildingService := service.NewBuildingService(buildingRepo)
+	buildingService := service.NewBuildingService(buildingRepo, log)
 	mediaService := service.NewMediaService(mediaRepo, mediaStorage)
 	unitService := service.NewUnitService(unitRepo)
 	authService := service.NewAuthService(userRepo, tokenRepo, &jwtConfig)
@@ -108,7 +108,7 @@ func main() {
 	contentHandler := handler.NewContentHandler(contentService)
 	authHandler := handler.NewAuthHandler(authService)
 	amenityHandler := handler.NewAmenityHandler(amenityService)
-	buildingHandler := handler.NewBuildingHandler(buildingService, log)
+	buildingHandler := handler.NewBuildingHandler(buildingService)
 	mediaHandler := handler.NewMediaHandler(mediaService)
 	unitHandler := handler.NewUnitHandler(unitService)
 
