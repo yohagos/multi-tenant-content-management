@@ -1,31 +1,32 @@
-import { Component, inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogContent, MatDialogRef, MatDialogTitle, MatDialogActions } from '@angular/material/dialog';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogContent,
+  MatDialogRef,
+  MatDialogTitle,
+  MatDialogActions,
+} from '@angular/material/dialog';
 import { AcceptBtn, RejectBtn } from '../../../public-api';
 
 @Component({
   selector: 'shared-confirm-dialog',
-  imports: [
-    AcceptBtn,
-    RejectBtn,
-    MatDialogTitle,
-    MatDialogContent,
-    MatDialogActions
-],
+  imports: [AcceptBtn, RejectBtn, MatDialogTitle, MatDialogContent, MatDialogActions],
   templateUrl: './confirm-dialog.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './confirm-dialog.scss',
 })
 export class ConfirmDialog {
-  dialogRef = inject(MatDialogRef<ConfirmDialog>)
-  data = inject(MAT_DIALOG_DATA)
+  dialogRef = inject(MatDialogRef<ConfirmDialog>);
+  data = inject(MAT_DIALOG_DATA);
 
-  title: string = this.data['title']
-  subtitle: string = this.data['subtitle']
+  title: string = this.data['title'];
+  subtitle: string = this.data['subtitle'];
 
   confirm() {
-    this.dialogRef.close(true)
+    this.dialogRef.close(true);
   }
 
   decline() {
-    this.dialogRef.close(false)
+    this.dialogRef.close(false);
   }
 }

@@ -1,6 +1,14 @@
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
-import { Component, inject, signal, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
+import {
+  Component,
+  inject,
+  signal,
+  TemplateRef,
+  ViewChild,
+  ViewContainerRef,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatAnchor } from '@angular/material/button';
 import { UnitStatusTransferService } from './unit.status.transfer.service';
@@ -10,40 +18,35 @@ import { UnitStatusTransferService } from './unit.status.transfer.service';
   imports: [MatAnchor],
   templateUrl: './unit.status.select.html',
   styleUrl: './unit.status.select.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true,
 })
 export class UnitStatusSelect {
-  @ViewChild('dropdownTemplate') dropdownTemplate!: TemplateRef<unknown>
-  private readonly overlay = inject(Overlay)
-  private readonly viewContainerRef = inject(ViewContainerRef)
-  private unitStatusTransferService = inject(UnitStatusTransferService)
+  @ViewChild('dropdownTemplate') dropdownTemplate!: TemplateRef<unknown>;
+  private readonly overlay = inject(Overlay);
+  private readonly viewContainerRef = inject(ViewContainerRef);
+  private unitStatusTransferService = inject(UnitStatusTransferService);
 
-  selectedStatus = signal<string>('')
+  selectedStatus = signal<string>('');
 
-  statusList = signal<string[]>([
-    'draft',
-    'available',
-    'reserved',
-    'rented',
-    'archived',
-  ])
+  statusList = signal<string[]>(['draft', 'available', 'reserved', 'rented', 'archived']);
 
-  private overlayRef?: OverlayRef
-  readonly controll = new FormControl<string | null>(null)
+  private overlayRef?: OverlayRef;
+  readonly controll = new FormControl<string | null>(null);
 
   toggle(): void {
     if (this.overlayRef?.hasAttached()) {
-      this.close()
-      return
+      this.close();
+      return;
     }
 
     const positionStrategy = this.overlay
       .position()
       .flexibleConnectedTo(this.viewContainerRef.element)
       .withPositions([
-        {originX: 'start', originY: 'bottom', overlayX: 'start', overlayY: 'top', offsetY: 4},
-        {originX: 'start', originY: 'top', overlayX: 'start', overlayY: 'bottom', offsetY: -4},
-      ])
+        { originX: 'start', originY: 'bottom', overlayX: 'start', overlayY: 'top', offsetY: 4 },
+        { originX: 'start', originY: 'top', overlayX: 'start', overlayY: 'bottom', offsetY: -4 },
+      ]);
 
     this.overlayRef = this.overlay.create({
       positionStrategy,
@@ -51,20 +54,20 @@ export class UnitStatusSelect {
       backdropClass: 'cdk-overlay-transparent-backdrop',
       scrollStrategy: this.overlay.scrollStrategies.reposition(),
       minWidth: this.viewContainerRef.element.nativeElement.offsetWidth,
-    })
+    });
 
-    this.overlayRef.attach(new TemplatePortal(this.dropdownTemplate, this.viewContainerRef))
-    this.overlayRef.backdropClick().subscribe(() => this.close())
+    this.overlayRef.attach(new TemplatePortal(this.dropdownTemplate, this.viewContainerRef));
+    this.overlayRef.backdropClick().subscribe(() => this.close());
   }
 
   select(status: string) {
-    this.unitStatusTransferService.setSelectedStatus(status)
-    this.controll.setValue(status)
-    this.close()
+    this.unitStatusTransferService.setSelectedStatus(status);
+    this.controll.setValue(status);
+    this.close();
   }
 
   close() {
-    this.overlayRef?.dispose()
-    this.overlayRef = undefined
+    this.overlayRef?.dispose();
+    this.overlayRef = undefined;
   }
 }

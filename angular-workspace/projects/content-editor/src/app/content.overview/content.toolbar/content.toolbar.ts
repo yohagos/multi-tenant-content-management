@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -15,6 +15,7 @@ export interface ContentToolbarItems {
   imports: [MatButtonModule, MatIconModule, MatToolbarModule, RouterOutlet],
   standalone: true,
   templateUrl: './content.toolbar.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './content.toolbar.scss',
 })
 export class ContentToolbar {

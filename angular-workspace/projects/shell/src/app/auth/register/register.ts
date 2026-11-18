@@ -1,10 +1,10 @@
-import { Component, inject } from '@angular/core';
-import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from "@angular/forms";
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
+import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { MatDividerModule } from "@angular/material/divider";
+import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from "@angular/material/input";
+import { MatInputModule } from '@angular/material/input';
 
 import { AuthService, RegisterRequest } from 'shared-data-access';
 import { AuthMask } from '../services/auth.mask';
@@ -21,12 +21,13 @@ import { AuthMask } from '../services/auth.mask';
     ReactiveFormsModule,
   ],
   templateUrl: './register.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './register.scss',
 })
 export class Register {
-  private readonly fb = inject(FormBuilder)
-  private readonly authService = inject(AuthService)
-  readonly authMaskService = inject(AuthMask)
+  private readonly fb = inject(FormBuilder);
+  private readonly authService = inject(AuthService);
+  readonly authMaskService = inject(AuthMask);
 
   readonly registerForm = this.fb.group({
     first_name: new FormControl('', [Validators.minLength(3)]),
@@ -34,21 +35,21 @@ export class Register {
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [Validators.required, Validators.minLength(8)]),
     tenant_id: new FormControl(''),
-  })
+  });
 
   onSubmit() {
     if (this.registerForm.invalid) {
-      this.registerForm.markAllAsTouched()
-      return
+      this.registerForm.markAllAsTouched();
+      return;
     }
-    const data = this.registerForm.getRawValue()
+    const data = this.registerForm.getRawValue();
     this.authService.register(data as RegisterRequest).subscribe({
-      next: response => {
-        console.log(`Register reponse for user => ${response}`)
+      next: (response) => {
+        console.log(`Register reponse for user => ${response}`);
       },
-      error: err => {
-        console.error(err)
-      }
-    })
+      error: (err) => {
+        console.error(err);
+      },
+    });
   }
 }
