@@ -19,6 +19,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatStepperModule } from '@angular/material/stepper';
 import { Router } from '@angular/router';
+<<<<<<< Updated upstream
 import {
   Building,
   BuildingFilter,
@@ -35,6 +36,11 @@ import {
   UnitStatusTransferService,
   UnitStatusSelect,
 } from 'shared-ui';
+=======
+import { Building, BuildingFilter, BuildingList, BuildingService, Unit, UnitService, UnitStatus } from 'shared-data-access';
+import { SnackbarService, BuildingSelect, BuildingTransferService, UnitStatusTransferService, UnitStatusSelect } from 'shared-ui';
+import { MatDateFnsModule } from '@angular/material-date-fns-adapter';
+>>>>>>> Stashed changes
 
 @Component({
   selector: 'app-add-unit',
@@ -44,6 +50,7 @@ import {
     MatCheckboxModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    MatDateFnsModule,
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
@@ -57,8 +64,16 @@ import {
   standalone: true,
   templateUrl: './add.unit.html',
   styleUrl: './add.unit.scss',
+<<<<<<< Updated upstream
   changeDetection: ChangeDetectionStrategy.Eager,
   providers: [MatDatepickerModule, MatNativeDateModule],
+=======
+  providers: [
+    MatDatepickerModule,
+    MatNativeDateModule,
+    provideNativeDateAdapter(),
+  ]
+>>>>>>> Stashed changes
 })
 export class AddUnit implements OnInit, AfterViewInit {
   private readonly _fb = inject(FormBuilder);
@@ -166,8 +181,23 @@ export class AddUnit implements OnInit, AfterViewInit {
 
   save() {
     if (!this.firstForm.valid || !this.secondForm.valid || !this.thirdForm.valid) {
+<<<<<<< Updated upstream
       this._snackBarService.errorSnackBar('Please check if required fields are filled.');
       return;
+=======
+      const testOutput = [
+        this.firstForm.getRawValue(),
+        this.secondForm.getRawValue(),
+        this.thirdForm.getRawValue(),
+      ]
+
+      console.log(
+        `form output => `,
+        testOutput,
+      )
+      this._snackBarService.errorSnackBar('Please check if required fields are filled.')
+      return
+>>>>>>> Stashed changes
     }
 
     let unit = this.transformData();
@@ -215,6 +245,10 @@ export class AddUnit implements OnInit, AfterViewInit {
   }
 
   private backToOverview() {
+<<<<<<< Updated upstream
     this._router.navigate(['content-editor']);
+=======
+    this._router.navigate(['content-editor/overview'])
+>>>>>>> Stashed changes
   }
 }

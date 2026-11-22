@@ -1,4 +1,368 @@
-/* You can add global styles to this file, and also import other style files */
+@use '@angular/material' as mat;
+@use 'material-icons/iconfont/material-icons.css';
+@use '../../../_theme-colors' as theme;
+@use 'sass:map';
+
+
+@include mat.core();
+
+html {
+  @include mat.all-component-themes(theme.$light-theme);
+  @include mat.system-level-colors(theme.$light-theme);
+
+  background-color: var(--mat-sys-background);
+  color: var(--mat-sys-on-background);
+
+  font-family: Arial, Helvetica, sans-serif;
+
+  @include mat.button-overrides((
+    filled-container-color: var(--mat-sys-primary),
+    filled-label-text-color: var(--mat-sys-primary),
+    outlined-label-text-color: var(--mat-sys-on-primary),
+    outlined-outline-color: var(--mat-sys-outline),
+    text-label-text-color: var(--mat-sys-primary),
+  ));
+
+  @include mat.fab-overrides((
+    container-color: var(--mat-sys-on-primary),
+    foreground-color: var(--mat-sys-on-primary),
+  ));
+
+  @include mat.icon-button-overrides((
+    icon-color: var(--mat-sys-primary),
+  ));
+
+  @include mat.card-overrides((
+    elevated-container-color: var(--mat-sys-on-primary),
+    outlined-container-color: var(--mat-sys-on-primary),
+    outlined-outline-color: var(--mat-sys-outline-variant),
+  ));
+
+  @include mat.form-field-overrides((
+    outlined-outline-color: var(--mat-sys-outline),
+    outlined-focus-outline-color: var(--mat-sys-primary),
+    outlined-hover-outline-color: var(--mat-sys-primary),
+    outlined-label-text-color: var(--mat-sys-on-surface-variant),
+    outlined-focus-label-text-color: var(--mat-sys-primary),
+  ));
+
+  @include mat.checkbox-overrides((
+    selected-icon-color: var(--mat-sys-on-primary),
+    selected-focus-icon-color: var(--mat-sys-on-primary),
+    selected-hover-icon-color: var(--mat-sys-on-primary),
+    selected-pressed-icon-color: var(--mat-sys-on-primary),
+  ));
+
+  @include mat.radio-overrides((
+    selected-icon-color: var(--mat-sys-primary),
+    selected-hover-icon-color: var(--mat-sys-primary),
+    selected-focus-icon-color: var(--mat-sys-primary),
+  ));
+
+  @include mat.slide-toggle-overrides((
+    selected-track-color: var(--mat-sys-primary),
+    selected-handle-color: var(--mat-sys-on-primary),
+  ));
+
+  @include mat.progress-bar-overrides((
+    active-indicator-color: var(--mat-sys-primary),
+  ));
+
+  @include mat.progress-spinner-overrides((
+    active-indicator-color: var(--mat-sys-primary),
+  ));
+
+  @include mat.slider-overrides((
+    active-track-color: var(--mat-sys-primary),
+    handle-color: var(--mat-sys-primary),
+  ));
+
+  @include mat.select-overrides((
+    focused-arrow-color: var(--mat-sys-primary),
+  ));
+
+  @include mat.option-overrides((
+    selected-state-label-text-color: var(--mat-sys-primary),
+  ));
+
+  @include mat.tabs-overrides((
+    active-indicator-color: var(--mat-sys-primary),
+    active-label-text-color: var(--mat-sys-primary),
+    active-focus-label-text-color: var(--mat-sys-primary),
+    active-hover-label-text-color: var(--mat-sys-primary),
+  ));
+
+  @include mat.menu-overrides((
+    container-color: var(--mat-sys-surface),
+    item-label-text-color: var(--mat-sys-on-surface),
+  ));
+
+  @include mat.dialog-overrides((
+    container-color: var(--mat-sys-surface),
+    subhead-color: var(--mat-sys-on-surface),
+  ));
+
+  @include mat.snack-bar-overrides((
+    container-color: var(--mat-sys-inverse-surface),
+    supporting-text-color: var(--mat-sys-inverse-on-surface),
+  ));
+
+  @include mat.toolbar-overrides((
+    container-background-color: var(--mat-sys-surface),
+    container-text-color: var(--mat-sys-on-surface),
+  ));
+
+  @include mat.table-overrides((
+    background-color: var(--mat-sys-surface),
+    header-headline-color: var(--mat-sys-on-surface),
+    row-item-label-text-color: var(--mat-sys-on-surface),
+    row-item-outline-color: var(--mat-sys-outline-variant),
+  ));
+
+  @include mat.list-overrides((
+    list-item-container-color: var(--mat-sys-surface),
+    list-item-label-text-color: var(--mat-sys-on-surface),
+    list-item-supporting-text-color: var(--mat-sys-on-surface-variant),
+  ));
+
+  @include mat.chips-overrides((
+    elevated-container-color: var(--mat-sys-surface),
+    label-text-color: var(--mat-sys-on-surface),
+  ));
+
+  @include mat.badge-overrides((
+    background-color: var(--mat-sys-error),
+    text-color: var(--mat-sys-on-error),
+  ));
+
+  @include mat.divider-overrides((
+    color: var(--mat-sys-outline-variant),
+  ));
+
+  @include mat.expansion-overrides((
+    container-background-color: var(--mat-sys-surface),
+    container-text-color: var(--mat-sys-on-surface),
+    actions-divider-color: var(--mat-sys-outline-variant),
+  ));
+
+  @include mat.tooltip-overrides((
+    container-color: var(--mat-sys-inverse-surface),
+    supporting-text-color: var(--mat-sys-inverse-on-surface),
+  ));
+
+  @include mat.datepicker-overrides((
+    calendar-container-background-color: var(--mat-sys-surface),
+    calendar-container-text-color: var(--mat-sys-on-surface),
+    calendar-header-text-color: var(--mat-sys-on-surface),
+    calendar-date-selected-state-background-color: var(--mat-sys-primary),
+    calendar-date-selected-state-text-color: var(--mat-sys-on-primary),
+  ));
+
+  @include mat.paginator-overrides((
+    container-background-color: var(--mat-sys-surface),
+    container-text-color: var(--mat-sys-on-surface),
+  ));
+
+  @include mat.autocomplete-overrides((
+    background-color: var(--mat-sys-surface),
+  ));
+
+  @include mat.bottom-sheet-overrides((
+    container-background-color: var(--mat-sys-surface),
+  ));
+
+  @include mat.stepper-overrides((
+    container-color: var(--mat-sys-surface),
+    header-label-text-color: var(--mat-sys-on-surface),
+    header-selected-state-label-text-color: var(--mat-sys-primary),
+    header-selected-state-icon-background-color: var(--mat-sys-primary),
+    header-selected-state-icon-foreground-color: var(--mat-sys-on-primary),
+  ));
+
+  @include mat.tree-overrides((
+    node-text-color: var(--mat-sys-on-surface),
+  ));
+}
+
+html.dark {
+  @include mat.all-component-colors(theme.$dark-theme);
+  @include mat.system-level-colors(theme.$dark-theme);
+
+  background-color: var(--mat-sys-background);
+  color: var(--mat-sys-on-background);
+
+  @include mat.theme-overrides((
+    primary: map.get(theme.$primary, 60)
+  ));
+
+  @include mat.button-overrides((
+    filled-container-color: var(--mat-sys-primary),
+    filled-label-text-color: var(--mat-sys-on-primary),
+    outlined-label-text-color: var(--mat-sys-on-primary),
+    outlined-outline-color: var(--mat-sys-outline),
+    text-label-text-color: var(--mat-sys-on-primary),
+  ));
+
+  @include mat.fab-overrides((
+    container-color: rgba(80, 80, 210, 0.2),
+    container-shape: var(--mat-sys-corner-large),
+    //foreground-color: var(--mat-sys-on-primary),
+  ));
+
+  @include mat.icon-button-overrides((
+    icon-color: var(--mat-sys-primary),
+  ));
+
+  @include mat.form-field-overrides((
+    outlined-outline-color: var(--mat-sys-outline),
+    outlined-focus-outline-color: var(--mat-sys-primary),
+    outlined-hover-outline-color: var(--mat-sys-primary),
+    outlined-label-text-color: var(--mat-sys-on-surface-variant),
+    outlined-focus-label-text-color: var(--mat-sys-primary),
+  ));
+
+  @include mat.checkbox-overrides((
+    selected-icon-color: var(--mat-sys-on-primary),
+    selected-focus-icon-color: var(--mat-sys-on-primary),
+    selected-hover-icon-color: var(--mat-sys-on-primary),
+    selected-pressed-icon-color: var(--mat-sys-on-primary),
+  ));
+
+  @include mat.radio-overrides((
+    selected-icon-color: var(--mat-sys-primary),
+    selected-hover-icon-color: var(--mat-sys-primary),
+    selected-focus-icon-color: var(--mat-sys-primary),
+  ));
+
+  @include mat.slide-toggle-overrides((
+    selected-track-color: var(--mat-sys-primary),
+    selected-handle-color: var(--mat-sys-on-primary),
+  ));
+
+  @include mat.progress-bar-overrides((
+    active-indicator-color: var(--mat-sys-primary),
+  ));
+
+  @include mat.progress-spinner-overrides((
+    active-indicator-color: var(--mat-sys-primary),
+  ));
+
+  @include mat.slider-overrides((
+    active-track-color: var(--mat-sys-primary),
+    handle-color: var(--mat-sys-primary),
+  ));
+
+  @include mat.select-overrides((
+    focused-arrow-color: var(--mat-sys-primary),
+    panel-background-color: var(--mat-sys-surface),
+
+  ));
+
+  @include mat.option-overrides((
+    selected-state-label-text-color: var(--mat-sys-primary),
+  ));
+
+  @include mat.tabs-overrides((
+    active-indicator-color: var(--mat-sys-primary),
+    active-label-text-color: var(--mat-sys-primary),
+    active-focus-label-text-color: var(--mat-sys-primary),
+    active-hover-label-text-color: var(--mat-sys-primary),
+  ));
+
+  @include mat.menu-overrides((
+    container-color: var(--mat-sys-surface),
+    item-label-text-color: var(--mat-sys-on-surface),
+  ));
+
+  @include mat.dialog-overrides((
+    container-color: var(--mat-sys-surface),
+    subhead-color: var(--mat-sys-on-surface),
+  ));
+
+  @include mat.snack-bar-overrides((
+    container-color: var(--mat-sys-inverse-surface),
+    supporting-text-color: var(--mat-sys-inverse-on-surface),
+  ));
+
+  @include mat.toolbar-overrides((
+    container-background-color: var(--mat-sys-surface),
+    container-text-color: var(--mat-sys-on-surface),
+  ));
+
+  @include mat.table-overrides((
+    background-color: var(--mat-sys-surface),
+    header-headline-color: var(--mat-sys-on-surface),
+    row-item-label-text-color: var(--mat-sys-on-surface),
+    row-item-outline-color: var(--mat-sys-outline-variant),
+  ));
+
+  @include mat.list-overrides((
+    list-item-container-color: var(--mat-sys-surface),
+    list-item-label-text-color: var(--mat-sys-on-surface),
+    list-item-supporting-text-color: var(--mat-sys-on-surface-variant),
+  ));
+
+  @include mat.chips-overrides((
+    elevated-container-color: var(--mat-sys-surface),
+    label-text-color: var(--mat-sys-on-surface),
+  ));
+
+  @include mat.badge-overrides((
+    background-color: var(--mat-sys-error),
+    text-color: var(--mat-sys-on-error),
+  ));
+
+  @include mat.divider-overrides((
+    color: var(--mat-sys-outline-variant),
+  ));
+
+  @include mat.expansion-overrides((
+    container-background-color: var(--mat-sys-surface),
+    container-text-color: var(--mat-sys-on-surface),
+    actions-divider-color: var(--mat-sys-outline-variant),
+  ));
+
+  @include mat.tooltip-overrides((
+    container-color: var(--mat-sys-inverse-surface),
+    supporting-text-color: var(--mat-sys-inverse-on-surface),
+  ));
+
+  @include mat.datepicker-overrides((
+    calendar-container-background-color: var(--mat-sys-surface),
+    calendar-container-text-color: var(--mat-sys-on-surface),
+    calendar-header-text-color: var(--mat-sys-on-surface),
+    calendar-date-selected-state-background-color: var(--mat-sys-primary),
+    calendar-date-selected-state-text-color: var(--mat-sys-on-primary),
+  ));
+
+  @include mat.paginator-overrides((
+    container-background-color: var(--mat-sys-surface),
+    container-text-color: var(--mat-sys-on-surface),
+  ));
+
+  @include mat.autocomplete-overrides((
+    background-color: var(--mat-sys-surface),
+  ));
+
+  @include mat.bottom-sheet-overrides((
+    container-background-color: var(--mat-sys-surface),
+  ));
+
+  @include mat.stepper-overrides((
+    container-color: var(--mat-sys-surface),
+    header-label-text-color: var(--mat-sys-on-surface),
+    header-selected-state-label-text-color: var(--mat-sys-primary),
+    header-selected-state-icon-background-color: var(--mat-sys-primary),
+    header-selected-state-icon-foreground-color: var(--mat-sys-on-primary),
+  ));
+
+  @include mat.tree-overrides((
+    node-text-color: var(--mat-sys-on-surface),
+  ));
+}
+
 body {
   margin: 0;
+  background-color: var(--mat-sys-background);
+  color: var(--mat-sys-on-background);
 }

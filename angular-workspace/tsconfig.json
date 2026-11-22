@@ -13,9 +13,9 @@
     "experimentalDecorators": true,
     "rootDir": ".",
     "paths": {
-      "shared-data-access": ["./dist/shared-data-access"],
-      "shared-ui": ["./dist/shared-ui"],
-      "shared-utils": ["./dist/shared-utils"]
+      "shared-data-access": ["./projects/shared-data-access/src/public-api.ts"],
+      "shared-ui": ["./projects/shared-ui/src/public-api.ts"],
+      "shared-utils": ["./projects/shared-utils/src/public-api.ts"]
     },
     "importHelpers": true,
     "target": "ES2022",

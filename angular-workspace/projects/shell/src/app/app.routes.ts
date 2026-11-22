@@ -1,11 +1,28 @@
 import { Routes } from '@angular/router';
 import { loadRemoteModule } from '@angular-architects/native-federation';
 import { Home } from './home/home';
+import { Auth } from './auth/auth';
 
 export const routes: Routes = [
   {
     path: '',
     component: Home,
+    children: [
+      {
+        path: 'authentication',
+        component: Auth,
+      },
+      {
+        path: 'register',
+        redirectTo: 'auth',
+        pathMatch: 'full',
+      },
+      {
+        path: 'login',
+        redirectTo: 'auth',
+        pathMatch: 'full',
+      },
+    ],
   },
   {
     path: 'tenant-admin',
@@ -29,11 +46,7 @@ export const routes: Routes = [
   },
   {
     path: 'content-editor',
-    loadChildren: () => loadRemoteModule({
-      remoteEntry: 'http://localhost:4202/remoteEntry.js',
-      remoteName: 'content-editor',
-      exposedModule: './Routes',
-    }).then(m => m.routes),
+    loadChildren: () => loadRemoteModule('content-editor', './Routes').then(m => m.routes),
   },
   {
     path: 'public-view',

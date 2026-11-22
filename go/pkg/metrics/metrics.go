@@ -90,4 +90,43 @@ var (
 		},
 		[]string{"exchange", "routing_key", "status"},
 	)
+
+	AuthLoginTotal = promauto.NewCounterVec(
+		prometheus.CounterOpts{
+			Name: "auth_login_total",
+			Help: "Total number of Login attempts",
+		},
+		[]string{"status"},
+	)
+
+	AuthRegisterTotal = promauto.NewCounterVec(
+		prometheus.CounterOpts{
+			Name: "auth_register_total",
+			Help: "Total number of registration attempts",
+		},
+		[]string{"status"},
+	)
+
+	AuthRefreshTotal = promauto.NewCounterVec(
+		prometheus.CounterOpts{
+			Name: "auth_refresh_total",
+			Help: "Total number of token refresh attempts",
+		},
+		[]string{"status"},
+	)
+
+	AuthActiveUsers = promauto.NewGauge(
+		prometheus.GaugeOpts{
+			Name: "auth_active_users",
+			Help: "Total number of active users",
+		},
+	)
+
+	AuthUsersByRole = promauto.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "auth_users_by_role",
+			Help: "Total number of users by role",
+		},
+		[]string{"role"},
+	)
 )

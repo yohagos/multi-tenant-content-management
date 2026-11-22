@@ -10,7 +10,12 @@
     "watch:shared-ui": "ng build shared-ui --watch",
     "watch:shared-data": "ng build shared-data-access --watch",
     "watch:shared-utils": "ng build shared-utils --watch",
-    "build:libs": "ng build shared-data-access && ng build shared-ui && ng build shared-utils"
+    "build:libs": "ng build shared-data-access && ng build shared-ui && ng build shared-utils",
+    "build:shell": "ng build shell --configuration=production",
+    "build:tenant-admin": "ng build tenant-admin --configuration=production",
+    "build:content-editor": "ng build content-editor --configuration=production",
+    "build:public-view": "ng build public-view --configuration=production",
+    "build:all": "npm run build:shell && npm run build:tenant-admin && npm run build:content-editor && npm run build:public-view"
   },
   "private": true,
   "packageManager": "npm@10.9.8",
@@ -25,6 +30,7 @@
     "@angular/router": "^22.2.6",
     "@softarc/native-federation-node": "^3.3.4",
     "es-module-shims": "^1.5.12",
+    "material-icons": "^1.13.14",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },
