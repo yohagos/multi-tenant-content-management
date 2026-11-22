@@ -1,7 +1,8 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { API_BASE_URL, Media, MediaEntityType } from 'shared-data-access';
+import {  Media, MediaEntityType } from '../models/media.model';
+import { API_BASE_URL } from '../tokens/api-base-url.token';
 
 export interface MediaListResponse {
   data: Media[]

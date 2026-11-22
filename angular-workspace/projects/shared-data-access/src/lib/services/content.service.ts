@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { API_BASE_URL, Content } from 'shared-data-access';
+import { Content } from '../models/content.model';
+import { API_BASE_URL } from '../tokens/api-base-url.token';
 
 @Injectable({
   providedIn: 'root',

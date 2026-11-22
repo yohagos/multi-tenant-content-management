@@ -1,4 +1,4 @@
-import { withNativeFederation, shareAll } from '@angular-architects/native-federation/config';
+import { withNativeFederation, fromPackageJson } from '@angular-architects/native-federation/config';
 export default withNativeFederation({
   name: 'public-view',
 

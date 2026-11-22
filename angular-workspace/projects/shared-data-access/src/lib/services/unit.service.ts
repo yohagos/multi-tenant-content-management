@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { API_BASE_URL, Unit, UnitList } from 'shared-data-access';
+import { Unit, UnitList } from '../models/unit.model';
+import { API_BASE_URL } from '../tokens/api-base-url.token';
 
 @Injectable({
   providedIn: 'root',

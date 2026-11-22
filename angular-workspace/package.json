@@ -9,7 +9,8 @@
     "test": "ng test",
     "watch:shared-ui": "ng build shared-ui --watch",
     "watch:shared-data": "ng build shared-data-access --watch",
-    "watch:shared-utils": "ng build shared-utils --watch"
+    "watch:shared-utils": "ng build shared-utils --watch",
+    "build:libs": "ng build shared-data-access && ng build shared-ui && ng build shared-utils"
   },
   "private": true,
   "packageManager": "npm@10.9.8",
