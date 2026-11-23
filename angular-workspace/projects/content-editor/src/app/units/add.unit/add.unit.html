@@ -2,16 +2,29 @@
   <mat-card-content>
     <mat-stepper #stepper>
       <mat-step [stepControl]="buildingForm" errorMessage="Choose a building">
-        <ng-template matStepLabel>Choose a Building</ng-template>
-
-        <div class="select-wrapper">
-          <app-building-select></app-building-select>
-        </div>
-        <div class="btns">
-          <button mat-raised-button [disabled]="chosenBuilding === null" matStepperNext>
-            Next
-          </button>
-        </div>
+        @if (loadingBuildings()) {
+          <mat-spinner class="spinner"></mat-spinner>
+        } @else {
+          <form [formGroup]="buildingForm">
+          <ng-template matStepLabel>Select a Building</ng-template>
+          <mat-form-field>
+            <mat-label>Building</mat-label>
+            <mat-select [formControl]="buildingForm.controls.building_id">
+              <mat-option>---</mat-option>
+              @for (item of buildings().data; track item) {
+                <mat-option [value]="item.id">
+                  {{ item.name }}
+                </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <div class="btns">
+            <button mat-raised-button [disabled]="buildingForm.controls.building_id.getRawValue() === null" matStepperNext>
+              Next
+            </button>
+          </div>
+        </form>
+        }
       </mat-step>
 
       <mat-step [stepControl]="firstForm" errorMessage="Fill required fields.">
@@ -109,18 +122,25 @@
             <mat-datepicker #picker></mat-datepicker>
           </mat-form-field>
 
-          <app-unit-status-select></app-unit-status-select>
+          <mat-form-field>
+            <mat-label>Status</mat-label>
+            <mat-select formControlName="status">
+              @for (item of unitStatus(); track $index) {
+                <mat-option [value]="item"> {{ item }} </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
 
           <mat-checkbox formControlName="published">Publish</mat-checkbox>
 
-          <!-- @if (thirdForm.controls.published !== null) {
+          @if (thirdForm.controls.published !== null) {
             <mat-form-field>
               <mat-label>Published at</mat-label>
               <input matInput formControlName="published_at" [matDatepicker]="publishpicker">
               <mat-datepicker-toggle matIconSuffix [for]="publishpicker"></mat-datepicker-toggle>
               <mat-datepicker #publishpicker></mat-datepicker>
             </mat-form-field>
-          } -->
+          }
 
           <div class="btns">
             <button

@@ -4,11 +4,10 @@ import {
   inject,
   OnInit,
   signal,
-  ViewEncapsulation,
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatNativeDateModule, provideNativeDateAdapter } from '@angular/material/core';
+import { MatNativeDateModule } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -30,11 +29,9 @@ import {
 } from 'shared-data-access';
 import {
   SnackbarService,
-  BuildingSelect,
-  BuildingTransferService,
   UnitStatusTransferService,
-  UnitStatusSelect,
 } from 'shared-ui';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-add-unit',
@@ -47,12 +44,11 @@ import {
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
+    MatProgressSpinnerModule,
     MatSelectModule,
     MatStepperModule,
 
     ReactiveFormsModule,
-    BuildingSelect,
-    UnitStatusSelect,
   ],
   standalone: true,
   templateUrl: './add.unit.html',
@@ -66,7 +62,6 @@ export class AddUnit implements OnInit, AfterViewInit {
   private readonly _snackBarService = inject(SnackbarService);
   private readonly _unitService = inject(UnitService);
   private readonly _buildingService = inject(BuildingService);
-  private readonly _buildingTransferService = inject(BuildingTransferService);
   private readonly _unitStatusTransferService = inject(UnitStatusTransferService);
 
   chosenBuilding: Partial<Building> | null = null;
@@ -86,6 +81,8 @@ export class AddUnit implements OnInit, AfterViewInit {
     limit: 20,
     offset: 0,
   };
+
+  loadingBuildings = signal<boolean>(true)
 
   searchForBuilding = '';
 
@@ -124,42 +121,27 @@ export class AddUnit implements OnInit, AfterViewInit {
     cold_rent: ['', Validators.required],
     warm_rent: ['', Validators.required],
     deposit: ['', Validators.required],
-    available_from: ['', Validators.required],
+    available_from: [Date, Validators.required],
     status: ['', Validators.required],
     published: [false, Validators.required],
-    published_at: [''],
+    published_at: [Date],
   });
 
   ngOnInit() {
     this._buildingService.list().subscribe({
-      next: (data) => {
-        this._buildingTransferService.setBuildings(data.data);
+      next: (data: BuildingList) => {
+        this.buildings.set(data)
       },
+      complete: () => {
+        this.loadingBuildings.set(false)
+      }
     });
   }
 
   ngAfterViewInit(): void {
-    this._buildingTransferService.selectedBuilding$.subscribe({
-      next: (data) => {
-        if (data !== null && data.id !== undefined) {
-          this.chosenBuilding = data;
-          this.unitTitle = data.name + '-';
-          this.unit_title.setValue(data.name + '-');
-        }
-      },
-    });
-
     this.firstForm.controls.unit_number.valueChanges.subscribe((value) => {
       if (value !== null) {
         this.unit_title.setValue(this.unitTitle + value);
-      }
-    });
-
-    this._unitStatusTransferService.selectedStatus$.subscribe((value) => {
-      if (value !== null) {
-        if (this.isValidUnitStatus(value)) {
-          this.thirdForm.controls.status.setValue(value);
-        }
       }
     });
   }
@@ -178,6 +160,7 @@ export class AddUnit implements OnInit, AfterViewInit {
       },
       error: (err) => {
         this._snackBarService.errorSnackBar(`Error occurred: ${err}`);
+        console.error(`Error while adding unit. \nError: ${JSON.stringify(err)}`)
       },
       complete: () => {
         this.backToOverview();
@@ -190,12 +173,12 @@ export class AddUnit implements OnInit, AfterViewInit {
       ...this.firstForm.getRawValue(),
       ...this.secondForm.getRawValue(),
       ...this.thirdForm.getRawValue(),
-      building_id: this.chosenBuilding,
+      building_id: this.buildingForm.controls.building_id.getRawValue(),
       floor: Number(this.firstForm.getRawValue().floor),
       rooms: Number(this.firstForm.getRawValue().rooms),
       bathrooms: Number(this.firstForm.getRawValue().bathrooms),
       bedrooms: Number(this.firstForm.getRawValue().bedrooms),
-
+      title: this.unit_title.getRawValue(),
       living_area_sqm: Number(this.secondForm.getRawValue().living_area_sqm),
       total_area_sqm: Number(this.secondForm.getRawValue().total_area_sqm),
       ceiling_height_m: Number(this.secondForm.getRawValue().ceiling_height_m),
@@ -204,6 +187,7 @@ export class AddUnit implements OnInit, AfterViewInit {
       cold_rent: Number(this.thirdForm.getRawValue().cold_rent),
       warm_rent: Number(this.thirdForm.getRawValue().warm_rent),
       deposit: Number(this.thirdForm.getRawValue().deposit),
+      available_from: this.thirdForm.controls.available_from.getRawValue(),
     } as unknown as Unit;
   }
 

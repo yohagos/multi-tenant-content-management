@@ -6,6 +6,12 @@ mat-card {
   margin: 2em  auto;
 }
 
+.spinner {
+  display: flex;
+  justify-self: center;
+  align-self: center;
+}
+
 form {
   display: flex;
   flex-direction: column;
