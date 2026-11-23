@@ -1,6 +1,6 @@
 @use '@angular/material' as mat;
 @use 'material-icons/iconfont/material-icons.css';
-@use '../../../_theme-colors' as theme;
+@use '../../shared-ui/src/lib/styles/theme.scss' as theme;
 @use 'sass:map';
 
 
