@@ -17,6 +17,8 @@ WORKDIR /app
 
 COPY --from=builder /go-api /app/go-api
 
+RUN mkdir -p /app/uploads
+
 COPY .env /app/.env
 
 EXPOSE 8080

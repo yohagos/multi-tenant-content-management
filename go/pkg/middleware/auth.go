@@ -6,12 +6,16 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/yohagos/multi-content-management/internal/core/service"
+	"github.com/yohagos/multi-content-management/pkg/logger"
 )
 
 func Auth(authService *service.AuthService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authHeader := c.GetHeader("Authorization")
+		logger := logger.New("warn")
+		logger.Warn(authHeader)
 		if authHeader == "" {
+			logger.Error("Auth Header is empty")
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "authorization header required"})
 			c.Abort()
 			return

@@ -17,7 +17,7 @@ func MapBuilding(existing, update *domain.Building) {
 	existing.Country = update.Country
 	existing.Latitude = update.Latitude
 	existing.Longitude = update.Longitude
-	existing.YearBuild = update.YearBuild
+	existing.YearBuilt = update.YearBuilt
 	existing.TotalFloors = update.TotalFloors
 	existing.TotalUnits = update.TotalUnits
 	existing.Description = update.Description

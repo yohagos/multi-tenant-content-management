@@ -1,18 +1,46 @@
-import { AfterViewInit, Component, inject, OnInit, signal, ViewEncapsulation } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  inject,
+  OnInit,
+  signal,
+  ViewEncapsulation,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatNativeDateModule, provideNativeDateAdapter } from "@angular/material/core";
+import { MatNativeDateModule, provideNativeDateAdapter } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatDatepickerModule } from "@angular/material/datepicker";
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatStepperModule } from '@angular/material/stepper';
 import { Router } from '@angular/router';
+<<<<<<< Updated upstream
+import {
+  Building,
+  BuildingFilter,
+  BuildingList,
+  BuildingService,
+  Unit,
+  UnitService,
+  UnitStatus,
+} from 'shared-data-access';
+import {
+  SnackbarService,
+  BuildingSelect,
+  BuildingTransferService,
+  UnitStatusTransferService,
+  UnitStatusSelect,
+} from 'shared-ui';
+=======
 import { Building, BuildingFilter, BuildingList, BuildingService, Unit, UnitService, UnitStatus } from 'shared-data-access';
 import { SnackbarService, BuildingSelect, BuildingTransferService, UnitStatusTransferService, UnitStatusSelect } from 'shared-ui';
+import { MatDateFnsModule } from '@angular/material-date-fns-adapter';
+>>>>>>> Stashed changes
 
 @Component({
   selector: 'app-add-unit',
@@ -22,6 +50,7 @@ import { SnackbarService, BuildingSelect, BuildingTransferService, UnitStatusTra
     MatCheckboxModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    MatDateFnsModule,
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
@@ -35,39 +64,45 @@ import { SnackbarService, BuildingSelect, BuildingTransferService, UnitStatusTra
   standalone: true,
   templateUrl: './add.unit.html',
   styleUrl: './add.unit.scss',
+<<<<<<< Updated upstream
+  changeDetection: ChangeDetectionStrategy.Eager,
+  providers: [MatDatepickerModule, MatNativeDateModule],
+=======
   providers: [
     MatDatepickerModule,
     MatNativeDateModule,
+    provideNativeDateAdapter(),
   ]
+>>>>>>> Stashed changes
 })
 export class AddUnit implements OnInit, AfterViewInit {
-  private readonly _fb = inject(FormBuilder)
-  private readonly _router = inject(Router)
-  private readonly _snackBarService = inject(SnackbarService)
-  private readonly _unitService = inject(UnitService)
-  private readonly _buildingService = inject(BuildingService)
-  private readonly _buildingTransferService = inject(BuildingTransferService)
-  private readonly _unitStatusTransferService = inject(UnitStatusTransferService)
+  private readonly _fb = inject(FormBuilder);
+  private readonly _router = inject(Router);
+  private readonly _snackBarService = inject(SnackbarService);
+  private readonly _unitService = inject(UnitService);
+  private readonly _buildingService = inject(BuildingService);
+  private readonly _buildingTransferService = inject(BuildingTransferService);
+  private readonly _unitStatusTransferService = inject(UnitStatusTransferService);
 
-  chosenBuilding: Partial<Building> | null = null
+  chosenBuilding: Partial<Building> | null = null;
 
-  unitTitle = ''
+  unitTitle = '';
 
-  unit_title = new FormControl({value: '', disabled: true})
+  unit_title = new FormControl({ value: '', disabled: true });
 
   readonly buildings = signal<BuildingList>({
     data: [],
     total: 0,
     limit: 20,
     offset: 0,
-  })
+  });
 
   buildingFilter: BuildingFilter = {
     limit: 20,
     offset: 0,
-  }
+  };
 
-  searchForBuilding = ''
+  searchForBuilding = '';
 
   readonly unitStatus = signal<UnitStatus[]>([
     'draft',
@@ -75,14 +110,14 @@ export class AddUnit implements OnInit, AfterViewInit {
     'reserved',
     'rented',
     'archived',
-  ])
+  ]);
 
   isValidUnitStatus = (value: string): value is UnitStatus =>
-    this.unitStatus().includes(value as UnitStatus)
+    this.unitStatus().includes(value as UnitStatus);
 
   readonly buildingForm = this._fb.group({
-    building_id: ['', Validators.required]
-  })
+    building_id: ['', Validators.required],
+  });
 
   readonly firstForm = this._fb.group({
     unit_number: ['', Validators.required],
@@ -91,14 +126,14 @@ export class AddUnit implements OnInit, AfterViewInit {
     rooms: ['', Validators.required],
     bedrooms: ['', Validators.required],
     bathrooms: ['', Validators.required],
-  })
+  });
 
   readonly secondForm = this._fb.group({
     living_area_sqm: ['', Validators.required],
     total_area_sqm: ['', Validators.required],
     balcony_area_sqm: ['', Validators.required],
     ceiling_height_m: ['', Validators.required],
-  })
+  });
 
   readonly thirdForm = this._fb.group({
     cold_rent: ['', Validators.required],
@@ -108,61 +143,76 @@ export class AddUnit implements OnInit, AfterViewInit {
     status: ['', Validators.required],
     published: [false, Validators.required],
     published_at: [''],
-  })
+  });
 
   ngOnInit() {
     this._buildingService.list().subscribe({
       next: (data) => {
-        this._buildingTransferService.setBuildings(data.data)
-      }
-    })
+        this._buildingTransferService.setBuildings(data.data);
+      },
+    });
   }
 
   ngAfterViewInit(): void {
     this._buildingTransferService.selectedBuilding$.subscribe({
       next: (data) => {
         if (data !== null && data.id !== undefined) {
-          this.chosenBuilding = data
-          this.unitTitle = data.name + '-'
-          this.unit_title.setValue(data.name + '-')
+          this.chosenBuilding = data;
+          this.unitTitle = data.name + '-';
+          this.unit_title.setValue(data.name + '-');
         }
-      }
-    })
+      },
+    });
 
     this.firstForm.controls.unit_number.valueChanges.subscribe((value) => {
       if (value !== null) {
-        this.unit_title.setValue(this.unitTitle + value)
+        this.unit_title.setValue(this.unitTitle + value);
       }
-    })
+    });
 
     this._unitStatusTransferService.selectedStatus$.subscribe((value) => {
       if (value !== null) {
         if (this.isValidUnitStatus(value)) {
-          this.thirdForm.controls.status.setValue(value)
+          this.thirdForm.controls.status.setValue(value);
         }
       }
-    })
+    });
   }
 
   save() {
     if (!this.firstForm.valid || !this.secondForm.valid || !this.thirdForm.valid) {
+<<<<<<< Updated upstream
+      this._snackBarService.errorSnackBar('Please check if required fields are filled.');
+      return;
+=======
+      const testOutput = [
+        this.firstForm.getRawValue(),
+        this.secondForm.getRawValue(),
+        this.thirdForm.getRawValue(),
+      ]
+
+      console.log(
+        `form output => `,
+        testOutput,
+      )
       this._snackBarService.errorSnackBar('Please check if required fields are filled.')
       return
+>>>>>>> Stashed changes
     }
 
-    let unit = this.transformData()
+    let unit = this.transformData();
 
     this._unitService.create(unit).subscribe({
       next: () => {
-        this._snackBarService.successSnackBar(`Unit ${unit.unit_number} added successfully.`)
+        this._snackBarService.successSnackBar(`Unit ${unit.unit_number} added successfully.`);
       },
       error: (err) => {
-        this._snackBarService.errorSnackBar(`Error occurred: ${err}`)
+        this._snackBarService.errorSnackBar(`Error occurred: ${err}`);
       },
       complete: () => {
-        this.backToOverview()
+        this.backToOverview();
       },
-    })
+    });
   }
 
   private transformData(): Unit {
@@ -184,17 +234,21 @@ export class AddUnit implements OnInit, AfterViewInit {
       cold_rent: Number(this.thirdForm.getRawValue().cold_rent),
       warm_rent: Number(this.thirdForm.getRawValue().warm_rent),
       deposit: Number(this.thirdForm.getRawValue().deposit),
-    } as unknown as Unit
+    } as unknown as Unit;
   }
 
   cancel() {
-    this.firstForm.reset()
-    this.secondForm.reset()
-    this.thirdForm.reset()
-    this.backToOverview()
+    this.firstForm.reset();
+    this.secondForm.reset();
+    this.thirdForm.reset();
+    this.backToOverview();
   }
 
   private backToOverview() {
-    this._router.navigate(['content-editor'])
+<<<<<<< Updated upstream
+    this._router.navigate(['content-editor']);
+=======
+    this._router.navigate(['content-editor/overview'])
+>>>>>>> Stashed changes
   }
 }

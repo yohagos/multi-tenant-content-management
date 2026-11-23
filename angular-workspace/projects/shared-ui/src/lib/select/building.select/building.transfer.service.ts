@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { Building } from 'shared-ui';
+import { Building } from './building.select';
 
 @Injectable({
   providedIn: 'root',

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -21,51 +21,52 @@ import { Router } from '@angular/router';
     ReactiveFormsModule,
   ],
   templateUrl: './login.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './login.scss',
 })
 export class Login {
-  private readonly fb = inject(FormBuilder)
-  private readonly authService = inject(AuthService)
-  private readonly tokenService = inject(TokenService)
-  readonly authMaskService = inject(AuthMask)
+  private readonly fb = inject(FormBuilder);
+  private readonly authService = inject(AuthService);
+  private readonly tokenService = inject(TokenService);
+  readonly authMaskService = inject(AuthMask);
 
-  private readonly router = inject(Router)
+  private readonly router = inject(Router);
 
   readonly loginForm = this.fb.group({
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [Validators.required, Validators.minLength(8)]),
-  })
+  });
 
   onSubmit() {
     if (this.loginForm.invalid) {
-      this.loginForm.markAsTouched()
-      return
+      this.loginForm.markAsTouched();
+      return;
     }
 
-    const data = this.loginForm.getRawValue()
-    let email = data['email'] || ''
-    let password = data['password'] || ''
+    const data = this.loginForm.getRawValue();
+    let email = data['email'] || '';
+    let password = data['password'] || '';
 
     if ((email !== null || email !== '') && (password !== null || password !== '')) {
       this.authService.login(email, password).subscribe({
         next: (response: LoginResponse) => {
-          this.tokenService.setTokens(response)
-          let user = this.tokenService.getUser()
+          this.tokenService.setTokens(response);
+          let user = this.tokenService.getUser();
           if (user !== null) {
-            this.afterLoginRoute(user.role)
+            this.afterLoginRoute(user.role);
           }
         },
         error: (err) => {
-          console.error('Login => error occurred : ', err)
+          console.error('Login => error occurred : ', err);
         },
-      })
+      });
     }
   }
 
   private afterLoginRoute(role: string) {
     switch (role) {
       case 'editor':
-        this.router.navigate(['content-editor/overview'])
+        this.router.navigate(['content-editor/overview']);
         break;
       default:
         break;
@@ -73,10 +74,7 @@ export class Login {
   }
 
   logout() {
-    this.tokenService.clear()
-    this.authService.logout()
+    this.tokenService.clear();
+    this.authService.logout();
   }
-
 }
-
-
