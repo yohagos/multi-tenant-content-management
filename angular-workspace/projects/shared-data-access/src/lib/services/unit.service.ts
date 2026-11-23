@@ -8,38 +8,26 @@ import { API_BASE_URL } from '../tokens/api-base-url.token';
   providedIn: 'root',
 })
 export class UnitService {
-  private readonly http = inject(HttpClient)
-  private readonly baseUrl = inject(API_BASE_URL)
+  private readonly http = inject(HttpClient);
+  private readonly baseUrl = inject(API_BASE_URL);
 
   create(request: Unit): Observable<void> {
-      return this.http.post<void>(
-        `${this.baseUrl}/unit`,
-        request,
-      )
-    }
+    return this.http.post<void>(`${this.baseUrl}/unit`, request);
+  }
 
-    getByID(id: string): Observable<Unit> {
-      return this.http.get<Unit>(
-        `${this.baseUrl}/unit/${id}`,
-      )
-    }
+  getByID(id: string): Observable<Unit> {
+    return this.http.get<Unit>(`${this.baseUrl}/unit/${id}`);
+  }
 
-    list(): Observable<UnitList> {
-      return this.http.get<UnitList>(
-        `${this.baseUrl}/unit`
-      )
-    }
+  list(): Observable<UnitList> {
+    return this.http.get<UnitList>(`${this.baseUrl}/unit`);
+  }
 
-    update(id: string, unit: Unit): Observable<void> {
-      return this.http.put<void>(
-        `${this.baseUrl}/unit/${id}`,
-        unit,
-      )
-    }
+  update(id: string, unit: Unit): Observable<void> {
+    return this.http.put<void>(`${this.baseUrl}/unit/${id}`, unit);
+  }
 
-    delete(id: string): Observable<void> {
-      return this.http.delete<void>(
-        `${this.baseUrl}/unit/${id}`,
-      )
-    }
+  delete(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/unit/${id}`);
+  }
 }
