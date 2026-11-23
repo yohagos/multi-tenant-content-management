@@ -1,0 +1,167 @@
+services:
+  postgres:
+    image: postgres:18-alpine3.24
+    container_name: multitenant-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: multitenant
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres/data:/var/lib/postgresql
+      - ./postgres/init:/docker-entrypoint-initdb.d
+    networks:
+      - multitenant-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  
+  redis:
+    image: redis:8-alpine
+    container_name: multitenant-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis/data:/data
+    networks:
+      - multitenant-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  
+  rabbitmq:
+    image: rabbitmq:4.3.4-management
+    container_name: multitenant-rabbitmq
+    command: >
+      sh -c "rabbitmq-plugins enable rabbitmq_prometheus && rabbitmq-server"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+      - "15692:15692"
+    volumes:
+      - ./rabbitmq/data:/var/lib/rabbitmq
+    networks:
+      - multitenant-network
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  
+  traefik:
+    image: traefik:v3.7.10
+    container_name: multitenant-traefik
+    command: 
+      - "--api.insecure=true"
+      - "--api.dashboard=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./traefik/traefik.yml:/etc/traefik/traefik.yml
+    networks:
+      - multitenant-network
+
+  prometheus:
+    image: prom/prometheus:v3.13.2
+    container_name: multitenant-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus/data:/prometheus
+    networks:
+      - multitenant-network
+    command: 
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+
+  go-api:
+    build:
+      context: ./go
+      dockerfile: Dockerfile
+    container_name: multitenant-go-api
+    env_file:
+      - ./go/.env
+    expose:
+      - "8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - multitenant-network
+    volumes:
+      - ./media_uploads:/app/uploads
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.go-api.rule=Host(`api.localhost`)"
+      - "traefik.http.services.go-api.loadbalancer.server.port=8080"
+  angular:
+    build:
+      context: ./angular-workspace
+      dockerfile: Dockerfile
+      args:
+        - SHELL_PORT=4200
+        - TENANT_ADMIN_PORT=4201
+        - CONTENT_EDITOR_PORT=4202
+        - PUBLIC_VIEW_PORT=4203
+    container_name: multitenant-angular
+    ports:
+      - "4200:80"
+    depends_on:
+      go-api:
+        condition: service_healthy
+    networks:
+      - multitenant-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.angular.rule=Host(`localhost`)"
+      - "traefik.http.services.angular.loadbalancer.server.port=80"
+    restart: unless-stopped
+
+  postgres-exporter:
+    image: prometheuscommunity/postgres-exporter:v0.18.1
+    container_name: multitenant-postgres-exporter
+    environment:
+      DATA_SOURCE_NAME: "postgresql://postgres:postgres@postgres:5432/multitenant?sslmode=disable"
+    ports:
+      - "9187:9187"
+    networks:
+      - multitenant-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  redis-exporter:
+    image: oliver006/redis_exporter:v1.81.0
+    container_name: multitenant-redis-exporter
+    environment:
+      REDIS_ADDR: "redis:6379"
+    ports:
+      - "9121:9121"
+    networks:
+      - multitenant-network
+    depends_on:
+      redis:
+        condition: service_healthy
+
+networks:
+  multitenant-network:
+    driver: bridge
