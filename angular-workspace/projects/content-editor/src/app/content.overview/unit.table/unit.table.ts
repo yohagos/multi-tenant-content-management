@@ -16,7 +16,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { forkJoin } from 'rxjs';
-import { UnitService, UnitList } from 'shared-data-access';
+import { UnitService, UnitList, Unit } from 'shared-data-access';
 
 @Component({
   selector: 'app-unit-table',
@@ -77,9 +77,14 @@ export class UnitTable {
     'warm_rent',
     'status',
     'deposit',
+    'options',
   ];
 
   ngOnInit(): void {
+    this.loadUnits()
+  }
+
+  private loadUnits() {
     forkJoin({
       units: this.unitService.list(),
     }).subscribe(({ units }) => {
@@ -90,5 +95,13 @@ export class UnitTable {
 
   applyUnitFilter(event: Event) {
     this.unitFilter.set((event.target as HTMLInputElement).value);
+  }
+
+  editUnit(unit: Unit) {
+    console.log('Edit Unit => ', JSON.stringify(unit))
+  }
+
+  deleteBuilding(unit: Unit) {
+    console.log('Delete Unit => ', JSON.stringify(unit))
   }
 }

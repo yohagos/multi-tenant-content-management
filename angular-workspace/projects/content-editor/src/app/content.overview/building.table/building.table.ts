@@ -16,7 +16,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { forkJoin } from 'rxjs';
-import { BuildingList, BuildingService } from 'shared-data-access';
+import { Building, BuildingList, BuildingService } from 'shared-data-access';
+import { SnackbarService } from 'shared-ui';
 
 @Component({
   selector: 'app-building-table',
@@ -38,6 +39,7 @@ import { BuildingList, BuildingService } from 'shared-data-access';
 })
 export class BuildingTable {
   private readonly buildingService = inject(BuildingService);
+  private readonly snackBarService = inject(SnackbarService)
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -74,9 +76,14 @@ export class BuildingTable {
     'total_units',
     'status',
     'published',
+    'options',
   ];
 
   ngOnInit(): void {
+    this.loadBuildings()
+  }
+
+  private loadBuildings() {
     forkJoin({
       buildings: this.buildingService.list(),
     }).subscribe(({ buildings }) => {
@@ -87,5 +94,24 @@ export class BuildingTable {
 
   applyBuildingFilter(event: Event) {
     this.buildingFilter.set((event.target as HTMLInputElement).value);
+  }
+
+  editBuilding(building: Building) {
+    console.log('edit building => ', JSON.stringify(building))
+    console.log('opening building edit')
+  }
+
+  deleteBuilding(building: Building) {
+    console.log('Delete Building => ', JSON.stringify(building))
+    if (building !== null && building.id !== undefined) {
+      this.buildingService.delete(building.id).subscribe({
+        next: () => {
+          this.loadBuildings()
+        },
+        error: (err: Error) => {
+          this.snackBarService.errorSnackBar('Internal error. Please try again.')
+        }
+      })
+    }
   }
 }

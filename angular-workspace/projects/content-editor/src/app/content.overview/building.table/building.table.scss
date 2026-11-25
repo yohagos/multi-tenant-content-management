@@ -26,5 +26,10 @@ mat-card {
 }
 
 .filters {
-    width: 100%;
-  }
+  width: 100%;
+}
+
+.actions {
+  display: flex;
+  justify-content: end;
+}
